@@ -1,5 +1,6 @@
 function [x] = locateParticles(I, beadParameter)
-% [x] = locateParticles(I, beadParameter) locates particles in the image
+% [x] = locateParticles(I, beadParameter) locates particles in the image using
+% a thresholding-based blob detection
 %
 % INPUTS
 % -------------------------------------------------------------------------
@@ -24,7 +25,7 @@ CC = bwconncomp(BW);
 numPixels = cellfun(@numel,CC.PixelIdxList);
 beadBlob = numPixels>minPixels & numPixels<maxPixels;
 
-% Find centroid of all the eligible blob;
+% Find centroid of all the eligible blobs
 S = regionprops(CC,'Centroid');
 BW2dProj = sum(BW,3);
 
@@ -34,7 +35,7 @@ try
     S2EquatorialEccentricity = [];
     S2MeridionalEccentricity = [];
     for tempi = 1:length(S2)
-        S2EquatorialEccentricity(tempi) = S2(tempi).EquatorialEccentricity; 
+        S2EquatorialEccentricity(tempi) = S2(tempi).EquatorialEccentricity;
         S2MeridionalEccentricity(tempi) = S2(tempi).MeridionalEccentricity;
     end
 
@@ -55,4 +56,3 @@ blobPts(:,2) = temp(:,1);
 x = blobPts;
 
 end
-

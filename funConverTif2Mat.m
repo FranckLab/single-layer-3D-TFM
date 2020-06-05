@@ -1,8 +1,6 @@
 function [savename] = funConverTif2Mat(folder,imgDir,imgName,imgNum,zHeight,isCrop,Icrop)
-%~~~~~~~~~~~~~ Single-layer TPT-based Traction Force Microscopy ~~~~~~~~~~~~~~~~
-%
-%Function to read in a image stack in .tif format and save to a 
-%.mat datafile for further processing (see importTiff for more details)
+% Function to read in a image stack in .tif format and save to a .mat
+% datafile for further processing (see importTiff for more details)
 %
 %--- INPUTS ---
 %  folder : the path to the data storage folder (default: "./data/tifs")
@@ -15,10 +13,15 @@ function [savename] = funConverTif2Mat(folder,imgDir,imgName,imgNum,zHeight,isCr
 %  Icrop: corner locations for cropping
 %
 %--- OUTPUTS ---
-% savename: the path and name of the .mat data file 
+% savename: the path and name of the .mat data file
 %
+% NOTES
+% ----------------------------------------------------------------------
 % Aug, 2019; Alex Landauer, Mohak Patel, Lauren Hazlett
 % Franck Lab, Brown Univerisity and University of Wisc - Madison
+%
+% If used please cite:
+%
 
 %% Set default params
 alternateImg = 0; %How images are stored in the tif, 1 => "123123"
@@ -56,7 +59,7 @@ savedir = [folder,'mat files',filesep,imgName,filesep]; %save in subdir "mat fil
 if exist(savedir,'dir') ~= 7 %make a new output folder if none exists
     mkdir(savedir);
 end
-savename = [savedir,name,'.mat']; 
+savename = [savedir,name,'.mat'];
 
 
 %% Read in the tif stack
@@ -77,4 +80,3 @@ save(savename,'vol','-v7.3');
 % disp('Tif convert complete')
 
 end
-

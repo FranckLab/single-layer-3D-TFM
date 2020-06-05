@@ -1,10 +1,9 @@
 function [savename,PSF] = funCropPSF(folder,imgName, savefolder,center_loc,sizePSF)
-%~~~~~~~~~~~~~ Single-layer TPT-based Traction Force Microscopy ~~~~~~~~~~~~~~~~
-%
-%Function to crop out a single bead volume image from a complete volume, to
-%be used as an experimental point spread function (PSF) for deconvolution.
-%This assumes that a bead is idealized a point source of light in the
-%image.
+% Function to crop out a single bead volume image from a complete volume, to
+% be used as an experimental point spread function (PSF) for deconvolution.
+% This assumes that a bead is idealized a point source of light in the
+% image. PSF size is defined as 1/2 the edge length of a cube centered at
+% 'center_loc'
 %
 %--- INPUTS ---
 %  folder    : cell array list of file names for the time series at the
@@ -16,8 +15,14 @@ function [savename,PSF] = funCropPSF(folder,imgName, savefolder,center_loc,sizeP
 %--- OUTPUTS ---
 % PSF: the cropped-out single bead image to be used for deconvolution
 %
-% June, 2019; Alex Landauer, Mohak Patel, Lauren Hazlett
+% NOTES
+% ----------------------------------------------------------------------
+% Aug, 2019; Alex Landauer, Mohak Patel, Lauren Hazlett
 % Franck Lab, Brown Univerisity and University of Wisc - Madison
+%
+% If used please cite:
+%
+
 
 i = 1; %use the first data file found, this should have the variable "I",
 %the full experimental volume image containing many beads
@@ -67,12 +72,12 @@ if ~exist('center_loc','var') || prod(center_loc) == 0
     figure
     imagesc3D(I)
     drawnow
-    
+
     %find a single, isolated bead bead and record the center-point
     x_pos = input('enter the x-coord center point: ');
     y_pos = input('enter the y-coord center point: ');
     z_pos = input('enter the z-coord center point: ');
-    
+
     % The point is in yxz
     pt = [y_pos,x_pos,z_pos];
 else
@@ -85,6 +90,6 @@ PSF = I(pt(1)-cropReg(1):pt(1)+cropReg(1),pt(2)-cropReg(2):pt(2)+cropReg(2),...
 
 %normalize PSF
 PSF = PSF/max(PSF(:));
-close; 
+close;
 %% Save to file
 save(savename,'PSF')

@@ -1,26 +1,30 @@
-function [savename,sizeI] = funDeconvolve3D(folder,savefolder,imgName, imgNum,PSF)
-%~~~~~~~~~~~~~ Single-layer TPT-based Traction Force Microscopy ~~~~~~~~~~~~~~~~
-%
-%Function to deconvolve a volume image using the experimentally gathered
-%PSF from the previous step (funCropPSF).  More sophisticated deconvolution
-%technique are available (e.g. see the "deconvlucy" documentation in Matlab)
-%but we have found this to be sufficent
+function [savename,sizeI] = funDeconvolve3D(folder,savefolder,imgName,imgNum,PSF)
+% Function to deconvolve a volume image using the experimentally gathered
+% PSF from the previous step (funCropPSF).  More sophisticated deconvolution
+% technique are available (e.g. see the "deconvlucy" documentation in Matlab)
+% but we have found this to be sufficent
 %
 %--- INPUTS ---
 %  folder: the path to the data storage folder (default: "./data/")
 %  savefolder: the path to the main folder where deconvolved data will be
 %              stored
 %   imgName:   path to correct images, including image names
-%   imgNum:    number of image of interest within data structure 
+%   imgNum:    number of image of interest within data structure
 %   PSF   : (optional) the PSF to use for deconvolution, if not given the
 %          script will attempt to load PSF.mat from the cd
 %
 %--- OUTPUTS ---
-%   savename:   name of deconvolved images 
+%   savename:   name of deconvolved images
 %   sizeI:      final image size
 %
+% NOTES
+% ----------------------------------------------------------------------
 % June, 2019; Mohak Patel, Alex Landauer, Lauren Hazlett
 % Franck Lab, Brown Univerisity and University of Wisc - Madison
+%
+% If used please cite:
+%
+
 
 %% Set default params
 if nargin < 1
@@ -78,4 +82,3 @@ save(savename, 'name', 'vol', '-v7.3');
 % disp(['Deconv: ',num2str(img_num)])
 
 end
-

@@ -1,29 +1,36 @@
 function [cellcentroid] = funPlotTraction(trac, points, BW, density, coneSize, mpname, isfigCrop, figCrop, savefolder)
-%% ~~~~~~~~~~~ Plots Traction data ~~~~~~~~~~~~
-%
-% Plots and saves figures of a cone plot of FE-computed traction data using 
-% colormap Turbo (Copyright (c) 2020, Daniel Fortunato All rights reserved.
+% Plots and saves figures of a cone plot of FE-computed traction data using
+% colormap Turbo (Copyright 2020, Daniel Fortunato. See:
 %  https://www.mathworks.com/matlabcentral/fileexchange/74662-turbo) along
-%  with the cell. 
+%  with the cell.
 %
 %
 %--- INPUTS ---
-% ti        : traction output from FEniCS
+% trac      : surface traction 3D vector components per each time stack.
+%             Output format - trac{timePoint}{component}. trac{t}{4} - magnitude
 % points    : locations at which traction in sampled
 % BW        : 3D matrix of black and white (double format) cell image
+% density   : density of cones for coneplot
+% coneSize 	: size of cones for coneplot
 % mpname    : name of multipoint data
 % isfigCrop : 0 or 1 to crop or not crop the data
 % figCrop   : [xmin xmax; ymin ymax] format borders for figure cropping
-% density   : density of cones for coneplot
-% coneSize 	: size of cones for coneplot
+% saveFolder: output folder to which to save figures
 %
 %
 %--- OUTPUTS ---
-% 
+% cellcentroid  : location of cell centroid from BW image
 %
+%
+% NOTES
+% ----------------------------------------------------------------------
 % May, 2020; Lauren Hazlett, Alex Landauer, Mohak Patel
 % Franck Lab, Brown Univerisity and University of Wisc - Madison
+%
+% If used please cite:
+%
 
+%% ~~~~~~~~~~~ Plot Traction data ~~~~~~~~~~~~
 
 %% Format Displacements and produce cone plot
 % folder = ['.',filesep,'data',filesep];
@@ -35,12 +42,12 @@ end
 
 for timePt = 1 : length(trac)
     fprintf('\nPlotting timepoint %i of %i\n',timePt,length(trac))
-    
+
     % Initialize cell border information
     im{timePt} = squeeze(sum(BW{timePt},3));
     im{timePt} = im{timePt}/max(im{timePt}(:));
     sizeBW = size(BW{timePt});
-    
+
     if isfigCrop == 1
         xmin = figCrop(3);
         ymin = figCrop(1);
@@ -52,14 +59,14 @@ for timePt = 1 : length(trac)
         xmax = sizeBW(1);
         ymax = sizeBW(2);
     end
-    
+
     BW_mip{timePt} = max(BW{timePt},[],3);
     cc = bwconncomp(BW_mip{timePt});
     BW_centroid = regionprops(cc, {'centroid'});
     BW_centroid = BW_centroid.Centroid;
     cellcentroid{timePt} = [BW_centroid(1)/sizeBW(1) BW_centroid(2)/sizeBW(2)];
-        
-    % Initializie displacement information
+
+    % Initializie traction information
     x(:,1) = points{timePt}{1};
     x(:,2) = points{timePt}{2};
     x(:,3) = ones(size(x(:,2)));
@@ -72,14 +79,14 @@ for timePt = 1 : length(trac)
     n{2} = 1:sizeBW(1);
     [n{:}] = ndgrid(n{:});
 
-    % Interpolate displacement on the deformed grid
+    % Interpolate traction on the deformed grid
     for i = 1:3
         F = scatteredInterpolant(x(:,1), x(:,2), ti(:,i), 'natural', 'none');
        Ti{i} = F(n{1},n{2});
     end
 
 
-    % Density of cone plot 
+    % Density of cone plot
     plotdensity = 1/density^2;
 
     % Density_mask;
@@ -104,7 +111,7 @@ for timePt = 1 : length(trac)
     timag_max = max(mag(idx));
 %     timag_max = max(mag);
 
-    
+
     % Plot
     figure;
     tt = zeros(128,3);
@@ -141,22 +148,21 @@ for timePt = 1 : length(trac)
     set(h_color, 'ylim', [0, timag_max]);
     axis off;
     lighting phong;
-    
+
     xlim([xmin, xmax])
     ylim([ymin, ymax])
     ylabel(h_color, 'Traction Magnitude (pN)');
-    
+
     title({'Cell Traction'; ['Multipoint: ' mpname, ', Timepoint: ' num2str(timePt)]})
     savefigname = [savedir, mpname, '_trac_tp_' num2str(timePt), '.png'];
     % Optional scale bar
 %     scalelength = 25; % desired scale bar length in um
 %      quiver(xmin + 15,ymin + 15,scalelength/um2px(1),0,'ShowArrowHead','off', 'LineWidth', 2, 'Color', [1 1 1])
-    
+
     % Save figure
     saveas(hc, savefigname);
-    
-end 
-
 
 end
 
+
+end

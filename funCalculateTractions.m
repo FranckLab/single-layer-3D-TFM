@@ -1,13 +1,12 @@
 function [ti, tiPN] = funCalculateTractions(varargin)
 % [ti, tiPN] = calculateTractions(Sij,Sij_pts,s,n); is used to calculate
-% surface traction 3D vector
-%
-% ADAPTED FROM LD-3DTFM Toyjanova et al.,2014(DOI:10.1371/journal.pone.0090976)
+% surface traction 3D vectors for a given stress state and deformed surface
+% configuration
 %
 % INPUT: Sij,Sij_pts, s, n
 % ------------------------------------------------------------------------
 % Sij: Cauchy Stress tensor
-% Sij_pts: vertices where Caushy stress is computed 
+% Sij_pts: vertices where Caushy stress is computed
 % s: surface coordinates where normals are defined
 % n: surface normals
 %
@@ -21,8 +20,14 @@ function [ti, tiPN] = funCalculateTractions(varargin)
 %
 % NOTES
 % ----------------------------------------------------------------------
+% Adapted from Toyjanova et al. 2014 (DOI:10.1371/journal.pone.0090976),
+% see: https://github.com/FranckLab/LD-3D-TFM
+%
 % For more information please see Section "Estimating 3D LD Cellular
-% Tractions." in Toyjanova et al.,2014(DOI:10.1371/journal.pone.0090976)
+% Tractions." in the aforementioned paper
+%
+% If used please cite:
+%
 
 [Sij,Sij_pts,s,n] = parseInputsTi(varargin{:});
 
@@ -36,7 +41,7 @@ end
 
 
 tiPN = cell(maxTime,1);
-for k = 1:maxTime  
+for k = 1:maxTime
     tiNormal{k} = abs(ti{k}{1}.*n{k,1}{1}+ti{k}{2}.*n{k,1}{2}+ti{k}{3}.*n{k,1}{3});
     for m = 1:3
         tiParallel_{k}{m} = ti{k}{m}-tiNormal{k}.*n{k,1}{m};

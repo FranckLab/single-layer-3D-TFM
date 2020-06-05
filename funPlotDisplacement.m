@@ -1,29 +1,37 @@
 function [cellcentroid] = funPlotDisplacement(u_plane, gridPts, BW, um2px, density, coneSize, mpname, isfigCrop, figCrop, savefolder)
-%% ~~~~~~~~~~~ Plots displacement data ~~~~~~~~~~~~
-%
-% Plots and saves figures of a cone plot of the planarized displacement 
-% data using colormap Turbo (Copyright (c) 2020, Daniel Fortunato All rights reserved.
-%  https://www.mathworks.com/matlabcentral/fileexchange/74662-turbo) along
-%  with the cell outline. 
+% Plots and saves figures of a cone plot of the planarized displacement
+% data using colormap Turbo (Copyright 2020, Daniel Fortunato.
+% See: https://www.mathworks.com/matlabcentral/fileexchange/74662-turbo) along
+% with the cell outline. Uses a previously user-generated and saved binarized
+% cell outline in 'BW'.
 %
 %
 %--- INPUTS ---
 % u_plane   : planarized displacement data
 % gridPts   : gridded plane on which displacement data is computed
 % BW        : 3D matrix of black and white (double format) cell image
-% um2px     : um to pixel ratio of images 
-% mpname  : name of multipoint data
-% figCrop : [xmin xmax; ymin ymax] format borders for figure cropping
+% um2px     : um to pixel ratio of images
 % density   : density of cones for coneplot
 % coneSize 	: size of cones for coneplot
+% mpname    : name of multipoint data
+% isfigCrop : 0 or 1 to crop or not crop the data
+% figCrop   : [xmin xmax; ymin ymax] format borders for figure cropping
+% saveFolder: output folder to which to save figures
 %
 %
 %--- OUTPUTS ---
 % cellcentroid  : location of cell centroid (from BW) for FEA
 %
+% NOTES
+% ----------------------------------------------------------------------
 % May, 2020; Lauren Hazlett, Alex Landauer
 % Franck Lab, Brown Univerisity and University of Wisc - Madison
+%
+% If used please cite:
+%
 
+
+%% ~~~~~~~~~~~ Plot displacement data ~~~~~~~~~~~~
 
 %% Format Displacements and produce cone plot
 % folder = ['.',filesep,'data',filesep];
@@ -35,12 +43,12 @@ end
 
 for timePt = 1 : length(u_plane)
     fprintf('\nPlotting timepoint %i of %i\n',timePt,length(u_plane))
-    
+
     % Initialize cell border information
     im{timePt} = squeeze(sum(BW{timePt},3));
     im{timePt} = im{timePt}/max(im{timePt}(:));
     sizeBW = size(BW{timePt});
-    
+
     if isfigCrop == 1
         xmin = figCrop(3);
         ymin = figCrop(1);
@@ -52,20 +60,20 @@ for timePt = 1 : length(u_plane)
         xmax = sizeBW(1);
         ymax = sizeBW(2);
     end
-    
+
     BW_mip{timePt} = max(BW{timePt},[],3);
     cc = bwconncomp(BW_mip{timePt});
     BW_centroid = regionprops(cc, {'centroid'});
     BW_centroid = BW_centroid.Centroid;
     cellcentroid{timePt} = [BW_centroid(1)/sizeBW(1) BW_centroid(2)/sizeBW(2)];
-        
+
     % Initializie displacement information
     xygrid = gridPts{timePt};
     xygrid{3} = ones(size(xygrid{1}));
     U = u_plane{timePt};
     U{4} = sqrt(U{1}.^2 + U{2}.^2 + U{3}.^2);
 
-    % Density of cone plot 
+    % Density of cone plot
     plotdensity = 1/density^2;
 
     % Density_mask;
@@ -85,7 +93,7 @@ for timePt = 1 : length(u_plane)
     mag = sqrt(v{1}{1}.^2 + v{1}{2}.^2 + v{1}{3}.^2);
     idx = vert{1} > xmin & vert{1} < xmax & vert{1} > ymin & vert{1} < ymax ;
     umag_max = max(mag(idx));
-    
+
     % Plot
     figure;
     tt = zeros(128,3);
@@ -107,7 +115,7 @@ for timePt = 1 : length(u_plane)
     axis image
     hold on
 
-    hc = coneplot(vert{1},vert{2},vert{3},v{1}{1},v{1}{2},v{1}{3},coneSize,'nointerp'); 
+    hc = coneplot(vert{1},vert{2},vert{3},v{1}{1},v{1}{2},v{1}{3},coneSize,'nointerp');
     caxis([-umag_max,umag_max])
     fvc = repmat(mag(:)',[42 1]);
     set(hc, 'facecolor', 'flat', 'facevertexcdata', fvc(:));
@@ -120,22 +128,21 @@ for timePt = 1 : length(u_plane)
     set(h_color, 'ylim', [0, umag_max]);
     axis off;
     lighting phong;
-    
+
     xlim([xmin, xmax])
     ylim([ymin, ymax])
     ylabel(h_color, 'Displacement (um)');
-    
+
     title({'Cell Displacement'; ['Multipoint: ' mpname, ', Timepoint: ' num2str(timePt)]})
     savefigname = [savedir, mpname, '_disp_tp_' num2str(timePt), '.png'];
     % Optional scale bar
 %     scalelength = 25; % desired scale bar length in um
 %      quiver(xmin + 15,ymin + 15,scalelength/um2px(1),0,'ShowArrowHead','off', 'LineWidth', 2, 'Color', [1 1 1])
-    
+
     % Save figure
     saveas(hc, savefigname);
-    
-end 
-
 
 end
 
+
+end

@@ -1,8 +1,7 @@
 function [n, tri] = calculateNormals(s)
 % [n, tri] = calculateNormals(s) is a function that calculates
-
-% surface normals from the surface grid,s
-% 
+% surface normals from the surface grid, s
+%
 % INPUTS
 % ------------------------------------------------------------------------
 %   s: cell array containing the surface coordinate grid defined by a
@@ -10,11 +9,11 @@ function [n, tri] = calculateNormals(s)
 %      s{time}{1} = x-coordinates of nodes
 %      s{time}{2} = y-coordinates of nodes
 %      s{time}{3} = z-coordinates of nodes
-%             
+%
 % OUTPUTS
 % -------------------------------------------------------------------------
 %   tri:  delaunay tiranguluzation of the surface.
-%   n: cell array containing the normal vectors for each point on the 
+%   n: cell array containing the normal vectors for each point on the
 %      surface
 %       n{time}{1} = x-component of normal vector
 %       n{time}{2} = y-component of normal vector
@@ -22,18 +21,14 @@ function [n, tri] = calculateNormals(s)
 
 % NOTES
 % -------------------------------------------------------------------------
-% none
-% 
+% From Toyjanova et al 2014 (DOI:10.1371/journal.pone.0090976) see:
+% https://github.com/FranckLab/LD-3D-TFM
+%
 % If used please cite:
-% Toyjanova J., Bar-Kochba E., López-Fagundo C., Reichner J., 
-% Hoffman-Kim D, Franck, C. (2014) High Resolution, Large Deformation 3D
-% Traction Force Microscopy. PLoS ONE 9(4): e90976. 
-% doi:10.1371/journal.pone.0090976
-
-
+%
 
 if ~iscell(s)
-    error('surface must have at least one time point within a cell array'); 
+    error('surface must have at least one time point within a cell array');
 end
 
 maxTime = length(s);
