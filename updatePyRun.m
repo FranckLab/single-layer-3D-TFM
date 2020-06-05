@@ -1,7 +1,5 @@
 function [] = updatePyRun(data_name_in,data_name_out,multipoint_name,E,nu,...
                            load_steps,numSteps,thickness,x_centroid_norm,y_centroid_norm)
-%~~~~~~~~~~~~~ Single-layer TPT-based Traction Force Microscopy ~~~~~~~~~~~~~~~~
-%
 %Function to update the Python runscript for FEniCS with new info for file
 %names and material properties
 %
@@ -16,7 +14,7 @@ function [] = updatePyRun(data_name_in,data_name_out,multipoint_name,E,nu,...
 %                  (fewer => faster; greater => more robust convergence)
 %  numSteps       : number of time steps at the current multipoint
 %                  (fewer => faster; greater => more robust convergence)
-%  thickness      : thickness (estimate) of the gel, 0 => "thick gel (20x of 
+%  thickness      : thickness (estimate) of the gel, 0 => "thick gel (20x of
 %                   max z-disp) assumption (default: 0)
 %  x_center_norm  : center location of the cell in normalized coords (default: 0.5)
 %  y_center_norm  : center location of the cell in normalized coords (default: 0.5)
@@ -24,7 +22,7 @@ function [] = updatePyRun(data_name_in,data_name_out,multipoint_name,E,nu,...
 %--- OUTPUTS ---
 %  - none: write the updated .py file each run needed
 %
-% June, 2019; Alex Landauer
+% June, 2019; Alex Landauer, updated May 2020
 % Franck Lab, Brown Univerisity and University of Wisc - Madison
 
 if nargin < 4
@@ -37,10 +35,10 @@ if nargin < 6
     load_steps = 5;
 end
 if nargin < 7
-    numSteps = 2; 
+    numSteps = 2;
 end
 if nargin < 8
-    thickness = 0; 
+    thickness = 0;
 end
 if nargin < 9
     x_centroid_norm = 0.5;

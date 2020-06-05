@@ -1,12 +1,13 @@
 function [pts] = radialcenter3dvec(img, x0, beadParameter);
+% From TPT:
 % [pts] = radialcenter3dvec(img, x0, beadParameter) localizes particles to
 % sub-voxel accuracy using radial symmetry method based on
 %
-% Liu, Shu-Lin, et al. "Fast and high-accuracy localization for 
-% three-dimensional single-particle tracking." Scientific reports 3 
+% Liu, Shu-Lin, et al. "Fast and high-accuracy localization for
+% three-dimensional single-particle tracking." Scientific reports 3
 % (2013): 2462.
 %
-% Note: Code modified from the radial symmetry code for 3D images provided 
+% Note: Code modified from the radial symmetry code for 3D images provided
 % by Shulin Liu
 %
 % INPUTS
@@ -111,7 +112,7 @@ B(3,:) = -squeeze(sum(sum(sum(bsxfun(@times,q.*u.*w,x) + ...
 
 
 if forloop == 0;
-    
+
     % Create Sparse A matrix as Asparse
     t(1,1,:) = 3*(0:nI-1);
     AidxM = [1,2,3;1,2,3;1,2,3];
@@ -119,14 +120,14 @@ if forloop == 0;
     AidxN = [1,2,3;1,2,3;1,2,3]';
     AidxN = bsxfun(@plus,repmat(AidxN,[1,1,nI]),t);
     Asparse = sparse(AidxM(:),AidxN(:),A(:));
-    
+
     B = B(:);
-    
+
     %Solve
     xyz = Asparse\B;
-    
+
 elseif forloop == 1;
-    
+
     %Solve
     xyz = zeros(nI*3,1);
     for i =1:nI
@@ -145,5 +146,3 @@ nonNaNPts = sum(isnan(pts),2)<1;
 pts = pts(nonNaNPts,:)+x0(nonNaNPts,:);
 
 end
-
-

@@ -1,4 +1,5 @@
 function [ggMatch,match] = matchPoints(x0,x1,knn)
+% Matching function from TPT
 
 % Create knn descriptor
 knnfD = 16;
@@ -41,4 +42,3 @@ end
 
 
 end
-

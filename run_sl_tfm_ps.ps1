@@ -5,10 +5,11 @@
 #
 #This script needs to be set with executable permissions
 #(run "Set-ExecutionPolicy -ExecutionPolicy Unrestricted -Scope process" in the
-#shell) and in the same folder as the displacement datafile.
+#shell) and in the same folder as the displacement datafiles.
 #
 #
 #--- INPUTS ---
+# *None*
 #
 # Sept, 2019; Alex Landauer
 # Franck Lab, Brown Univerisity and University of Wisc - Madison

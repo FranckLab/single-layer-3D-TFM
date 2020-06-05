@@ -27,28 +27,23 @@ function [beadParam,findParam] = getBeadParams(deconvName,maxhist,beadParam)
 %load the example (first) deconvolved image
 load(deconvName{1});
 
-%normalize and binarize
+% Parameters
+minPixels = beadParameter.minSize;  %Minimum pixel count in blob for bead
+maxPixels = beadParameter.maxSize;  %Maximum pixel count in blob for bead
+
+%normalize and binarize (input I in locateParticles is similarly normalized)
 vol = vol/max(vol(:));
 BW = vol>beadParam{1}.thres;
 
-%use same process as the locateParticles script ????? locatePart went back to a simple thershold based routine (ask Lauren)
+%use same process as the locateParticles script
 CC = bwconncomp(BW);
 numPixels = cellfun(@numel,CC.PixelIdxList);
-idx = numPixels<3;
-idx = find(idx);
-for i = 1:length(idx)
-    BW(CC.PixelIdxList{idx(i)}) = 0;
-end
-I = imgaussfilt3(vol,0.75);
-Im = -I;
-Im(~BW) = Inf;
-L = watershed(Im);
-L(~BW) = 0;
+beadBlob = numPixels>minPixels & numPixels<maxPixels;
 
-numPixels = regionprops(L, 'Area');
+numPixels = regionprops(beadBlob, 'Area');
 numPixels = double(struct2dataset(numPixels));
 
-%show the resultand bead stats
+%show the resultant bead stats
 figure;
 hist(numPixels(numPixels<maxhist),30)
 title('Histogram of detected particle size')
@@ -75,6 +70,26 @@ if ~isempty(max_r)
     beadParam{1}.maxSize = max_r;
 end
 
+
+%rerun to check thresh param
+BW = vol>beadParam{1}.thres;
+
+%use same process as the locateParticles script
+CC = bwconncomp(BW);
+numPixels = cellfun(@numel,CC.PixelIdxList);
+beadBlob = numPixels>minPixels & numPixels<maxPixels;
+
+numPixels = regionprops(beadBlob, 'Area');
+numPixels = double(struct2dataset(numPixels));
+
+%show the resultant bead stats
+figure;
+hist(numPixels(numPixels<maxhist),30)
+title('Histogram of detected particle size')
+xlabel('Detected particle size (in voxels)')
+ylabel('Number of occurances')
+drawnow
+
 YN = [];
 while isempty(YN)
     YN = input('\nFinalize parameters? (Y/N): ','s');
@@ -85,27 +100,5 @@ if YN(1) == 'N' ||  YN(1) == 'n'
 else
     findParam = 0;
 end
-
-
-%rerun to check thresh param
-BW = vol>thresh;
-CC = bwconncomp(BW);
-numPixels = cellfun(@numel,CC.PixelIdxList);
-idx = numPixels<3;
-idx = find(idx);
-for i = 1:length(idx)
-    BW(CC.PixelIdxList{idx(i)}) = 0;
-end
-I = imgaussfilt3(vol,0.75);
-Im = -I;
-Im(~BW) = Inf;
-L = watershed(Im);
-L(~BW) = 0;
-
-numPixels = regionprops(L, 'Area');
-numPixels = double(struct2dataset(numPixels));
-
-% figure;
-% hist(numPixels(numPixels<maxhist),30)
 
 end

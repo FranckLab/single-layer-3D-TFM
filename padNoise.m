@@ -1,4 +1,8 @@
 function [I] = padNoise(I,padSize)
+% Pad edges of an input image 'I' with small, random, non-zero value in
+% a width of 'padSize' on each edge. Avoids issues of "flat" areas in a padded
+% image without adding content
+
 I = padarray(I,padSize);
 
 pds1 = 1:padSize(1); pds1 = [pds1,size(I,1)-padSize(1)+1:size(I,1)];
@@ -15,4 +19,3 @@ idx = find(I0==1);
 I(idx) = 0.00005*rand(size(idx)) + 0.00005;
 
 end
-

@@ -1,5 +1,5 @@
 function [idx] = ptsIn_x0subset(x,sPt,sSize,tIdx)
-%
+% From TPT:
 % [[idx] = ptsIn_x0subset(x,sPt,sSize,tIdx) Finds untracked particles in
 % the subset of the reference image
 %
@@ -32,4 +32,3 @@ idx = idx.*(~tIdx(idx)); %save only untracked index
 idx = nonzeros(idx);
 
 end
-

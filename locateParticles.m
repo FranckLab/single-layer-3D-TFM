@@ -1,6 +1,6 @@
 function [x] = locateParticles(I, beadParameter)
 % [x] = locateParticles(I, beadParameter) locates particles in the image using
-% a thresholding-based blob detection
+% a global fixed thresholding-based blob detection
 %
 % INPUTS
 % -------------------------------------------------------------------------

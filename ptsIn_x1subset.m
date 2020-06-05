@@ -1,5 +1,5 @@
 function idx = ptsIn_x1subset(x,sPt,sSize,utIdx)
-%
+% From TPT:
 % [[idx] = ptsIn_x1subset(x,sPt,sSize,tIdx) Finds untracked particles in
 % the subset of the deformed image
 %

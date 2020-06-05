@@ -1,8 +1,8 @@
 #~~~~~~~~~~~~~ Single-layer TPT-based Traction Force Microscopy ~~~~~~~~~~~~~~~~
-#Run script using the FEniCS package in Python3 to compute displacment and stress
-#(inc. traction) from a single top layer of beads used to track 3D displacements
+# Run script using the FEniCS package in Python3 to compute displacment and stress
+# from a single top layer of beads used to track 3D displacements
 #
-# June, 2019; Alex Landauer and Kaushik Vijaykumar
+# June, 2019; Alex Landauer, Mohak Patel, and Kaushik Vijaykumar
 # Franck Lab and Kasari Lab, Brown Univerisity and University of Wisc - Madison
 #
 #imports
@@ -87,8 +87,8 @@ def sl_tfm_solve(data_name_in,data_name_out,load_steps,E,nu,thickness,x_center_n
     # mesh.coordinates()[:] = xyz_bar_coor
     # coor = mesh.coordinates()
 
-    vtkfile = File("ex_mesh_densified"+tag+".pvd")
-    vtkfile << mesh
+    # vtkfile = File("ex_mesh_densified"+tag+".pvd")
+    # vtkfile << mesh
 
     #---------------------IMPORT MATLAB DATA------------------------------------
     print("Import data...")
@@ -107,8 +107,8 @@ def sl_tfm_solve(data_name_in,data_name_out,load_steps,E,nu,thickness,x_center_n
     z_ = mesh.coordinates()[:,2]
 
     #keep everything in um-scale, so that disps and mesh remain O(1) or O(10)
-    #by definition, from Matlab, the mesh starts at (0,0,0) and max from the
-    #image size (in practice the max location of the beads)
+    #since this is in the microscope. From Matlab, the mesh starts at (0,0,0)
+    #and max from the image size (in practice the max location of the beads)
 
     #warp the mesh to the size of the imagem
     min_x = np.min(x_)
@@ -126,9 +126,7 @@ def sl_tfm_solve(data_name_in,data_name_out,load_steps,E,nu,thickness,x_center_n
         max_uz = np.max(np.abs(dispdata[:,2]))
         max_z = 10*max_uz #for "thick" substrate assumption, make thickness
                           #10x the max z disp
-    # print(max_x)
-    # print(max_y)
-    # print(max_z)
+
     def rescale(x,y,z):
         return [max_x/np.max(x_)*x, max_y/np.max(y_)*y, max_z/np.max(z_)*z]
 
@@ -150,14 +148,14 @@ def sl_tfm_solve(data_name_in,data_name_out,load_steps,E,nu,thickness,x_center_n
     xi,yi,zi = coor[:,0],coor[:,1],coor[:,2]
     ux,uy,uz = dispdata[:,0],dispdata[:,1],dispdata[:,2]
 
-    #print(np.max(dispdata))
-
     #def at x,y,z return only x y -> i.e. turn "slightly" 3D data (from the
     #TPT result) into 2D data so that it can be imposed as a BC
     pts = coor[:,[0,1]]
     fux_ = sp.interpolate.CloughTocher2DInterpolator(pts, ux, fill_value=0)
     fuy_ = sp.interpolate.CloughTocher2DInterpolator(pts, uy, fill_value=0)
     fuz_ = sp.interpolate.CloughTocher2DInterpolator(pts, uz, fill_value=0)
+
+    # Could also use a linear interpolant, but Clough seems to do well
     # fux_ = sp.interpolate.LinearNDInterpolator(pts, dispdata[:,0])
     # fuy_ = sp.interpolate.LinearNDInterpolator(pts, dispdata[:,1])
     # fuz_ = sp.interpolate.LinearNDInterpolator(pts, dispdata[:,2])
@@ -169,10 +167,10 @@ def sl_tfm_solve(data_name_in,data_name_out,load_steps,E,nu,thickness,x_center_n
         return fuz_(x,y)
 
     #define a class to determine the incremental displacment at "time" step t
-    class MyExpression0(UserExpression):
+    class DispIncrementFunc(UserExpression):
         #indented disp
         def __init__(self, t, **kwargs):
-            super(MyExpression0, self).__init__(**kwargs)
+            super(DispIncrementFunc, self).__init__(**kwargs)
             self.t = t
         def eval(self, value, x):
             value[0] = fux(x[0],x[1],x[2])*self.t
@@ -182,8 +180,8 @@ def sl_tfm_solve(data_name_in,data_name_out,load_steps,E,nu,thickness,x_center_n
             return (3,)
 
     #define a function space and expression for the imposed displacement
-    ftemp = Function(V)
-    ftemp = MyExpression0(t=0.0, degree=5)
+    temp_disp_inc = Function(V)
+    temp_disp_inc = DispIncrementFunc(t=0.0, degree=5)
 
 
     #---------------------SUBDOMAINS AND BOUNDARY CONDITIONS--------------------
@@ -229,7 +227,7 @@ def sl_tfm_solve(data_name_in,data_name_out,load_steps,E,nu,thickness,x_center_n
     bottom = Bottom()
 
     # define meshfunction to identify boundaries by numbers
-    # boundaries = FacetFunction("size_t", mesh)
+    # boundaries = FacetFunction("size_t", mesh) #"old" FEniCS way of doing things
     boundaries = MeshFunction("size_t", mesh, 2)
     boundaries.set_all(0)
     left.mark(boundaries, 1)   # mark left as 1
@@ -240,8 +238,8 @@ def sl_tfm_solve(data_name_in,data_name_out,load_steps,E,nu,thickness,x_center_n
     top.mark(boundaries, 6)    # mark top as 6
 
     # Define new measure including boundary naming
-    # left: ds(1), right: ds(2), top: ds(3), bottom: ds(4)
-    dss = ds(subdomain_data=boundaries)
+    # left: ds(1), right: ds(2), top: ds(3), bottom: ds(4) #"old" way
+    dss = ds(subdomain_data=boundaries) #"new" way
 
     #define BCs (zero disp), can be modified as approperiate
     bcleft = DirichletBC(V.sub(0), Constant(0.0), boundaries, 1)
@@ -251,11 +249,13 @@ def sl_tfm_solve(data_name_in,data_name_out,load_steps,E,nu,thickness,x_center_n
     bcbottom2 = DirichletBC(V.sub(2), Constant(0.0), boundaries, 3)
     bcfront = DirichletBC(V.sub(0), Constant(0.0), boundaries, 4)
     bcback = DirichletBC(V.sub(1), Constant(0.0), boundaries, 5)
-    bctop = DirichletBC(V, ftemp, boundaries, 6)
-    # bcs = [bcleft,bcright,bcfront,bcback,bcbottom0,bcbottom1,bcbottom2,bctop]
-    bcs = [bcleft,bcback,bcbottom0,bcbottom1,bcbottom2,bctop]
-    # bcs = [bcbottom0,bcbottom1,bcbottom2,bctop]
+    bctop = DirichletBC(V, temp_disp_inc, boundaries, 6)
 
+    bcs = [bcleft,bcback,bcbottom0,bcbottom1,bcbottom2,bctop]
+
+    # other reasonable ways to set bcs, depending on config
+    # bcs = [bcleft,bcright,bcfront,bcback,bcbottom0,bcbottom1,bcbottom2,bctop]
+    # bcs = [bcbottom0,bcbottom1,bcbottom2,bctop]
 
     #save mesh to check in Paraview (or similar) if needed
     vtkfile = File("ex_mesh_boundaries_N"+str(N)+tag+".pvd")
@@ -308,7 +308,8 @@ def sl_tfm_solve(data_name_in,data_name_out,load_steps,E,nu,thickness,x_center_n
     #---------------------SET UP THE SOLVERS FOR THE VARIATIONAL PROBLEM--------
 
     print("Solving for u...")
-    #basis vectors and traction, to be used later in the script
+    # basis vectors and traction, to be used later in the script
+    # (old - traction computed in Matlab now)
     #e1 = Constant([1.,0.,0.])
     #e2 = Constant([0.,1.,0.])
     #e3 = Constant([0.,0.,1.])
@@ -320,7 +321,7 @@ def sl_tfm_solve(data_name_in,data_name_out,load_steps,E,nu,thickness,x_center_n
     # Non-linear solver
     solver_u = NonlinearVariationalSolver(problem_u_nl)
 
-    # Solver parameters
+    # Solver parameters - these seem okay, possible to optimize more though
     prm = solver_u.parameters
     prm['newton_solver']['linear_solver'] = 'bicgstab'
     prm['newton_solver']['preconditioner'] = 'petsc_amg'
@@ -328,7 +329,6 @@ def sl_tfm_solve(data_name_in,data_name_out,load_steps,E,nu,thickness,x_center_n
     prm['newton_solver']['relative_tolerance'] = 1E-5
     prm['newton_solver']['maximum_iterations'] = 500
     prm['newton_solver']['relaxation_parameter'] = 1.0
-
 
 
     #---------------------SOLVE THE VARIATIONAL PROBLEM-------------------------
@@ -346,13 +346,14 @@ def sl_tfm_solve(data_name_in,data_name_out,load_steps,E,nu,thickness,x_center_n
     #the solve
     for (i_t, t) in enumerate(load_multipliers):
         print(t)
-        ftemp.t = t*ut
+        temp_disp_inc.t = t*ut
         # Solve variational problem
         solver_u.solve()
         var = var + 1
 
-    vtkfile = File(data_name_out+"_u_"+tag+".pvd")
-    vtkfile << u
+    # save the vtk file for displacement only, helpful for debugging
+    #vtkfile = File(data_name_out+"_u_"+tag+".pvd")
+    #vtkfile << u
 
     #---------------------SOLVE FOR STRESSES (AND TRACTIONS)--------------------
 
@@ -360,12 +361,13 @@ def sl_tfm_solve(data_name_in,data_name_out,load_steps,E,nu,thickness,x_center_n
 
     #set up tensor space and project stresses onto it
     V_uT = TensorFunctionSpace(mesh,"Lagrange",1)
-    bcs_stress = [bcleft,bcback,bcbottom0,bcbottom1,bcbottom2]
+    bcs_stress = [bcleft,bcback,bcbottom0,bcbottom1,bcbottom2] # leave out "top"
     sigma_c = project(stress,V_uT,bcs_stress,solver_type="cg",preconditioner_type="petsc_amg")
 
-    print("testing...")
-    vtkfile = File(data_name_out+"_stress_bcs"+tag+".pvd")
-    vtkfile << sigma_c
+    # vtk of stress for debugging
+    # print("testing...")
+    # vtkfile = File(data_name_out+"_stress_bcs"+tag+".pvd")
+    # vtkfile << sigma_c
 
     #---------------------SAVE DATA TO VTK AND MAT FILES------------------------
 

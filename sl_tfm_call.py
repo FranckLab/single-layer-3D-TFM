@@ -7,13 +7,16 @@
 # the Matlab script "updatePyRun.m", and should NOT be modified in this script.
 #WARNIG: line numbers are hardcoded in the Matlab script.
 #
-#--- INPUTS ---
+#--- INPUTS --- (set in the file, written via Matlab set up script)
 #  data_name_in : name of the input data file containing 3D single-layer displacements
 #  data_name_out: name prefix of the output data files
 #  load_steps   : number of load steps used to compute the solution
 #                  (fewer => faster; greater => more robust convergence)
 #  E            : linearized elastic modulus of the substrate gel
 #  nu           : Poisson's ratio of the substrate gel
+#  thickness    : Estimated gel thickness
+#  x_center_norm: normalized x-coord of the center of the deformation
+#  y_center_norm: normalized x-coord of the center of the deformation
 #
 # June, 2019; Alex Landauer
 # Franck Lab, Brown University and University of Wisc - Madison

@@ -1,12 +1,19 @@
 function [] = plot_trac_simple(tri,trac,points)
-%simple plotting function to generate a coneplot of traction on a deformed
-%surface configuration
+% Simple plotting function to generate a coneplot of traction on a deformed
+% surface configuration for diagnostics
 %
-% DT = Delaunay triangularization object
-% trac = traction vectors
-%   - trac{time, 1} is the vector components
-%   - trac{time, 2} is the vector origin
 %
+%--- INPUTS ---
+% tri    : Surface triangulization (e.g. from 'calculateNormals')
+% trac   : traction vectors from funCalculateTractions
+%           - trac{i} is the vector component in the i'th direction (x,y,z)
+% points : Points where the tractions are sampled
+%
+%--- OUTPUTS ---
+% *None*
+%
+% NOTES
+% ----------------------------------------------------------------------
 % AKL, MP, 2020-04-17
 
 %need faces and vertices from the DT
@@ -76,10 +83,10 @@ hCBt.Label.Color = 'white';
 % % view([132.61 6.5]);
 % % camva('manual')
 % % lighting gouraud
-% % 
+% %
 % % h = gcf;
 % % set(gca,'color',0.9*[1,1,1],'Visible','off')
 % % set(h,'color','k');
-% % 
+% %
 
 end

@@ -1,5 +1,5 @@
 function [fd,fm] = knnDescriptor(x,IDX,knnFD,knnFM,nSpheres)
-%
+% From TPT:
 % [fd,fm] = knnDescriptor(x,IDX,knnFD,knnFM,nSpheres) computes particle
 % descriptor from neighboringparticles for particles with IDX index in x
 %
@@ -48,7 +48,7 @@ D = floor(D);
 %% %%%%%%%%%%%%%%%%% Orange feature %%%%%%%%%%%%%%%%%%%%%%
 % for tempi = 1:sum(IDX)
 %     par
-%     
+%
 % end
 
 %% %%%%%%%%%% 3D feature: inner+outer shell structure  %%%%%%%%%%%%%%%%%%%%

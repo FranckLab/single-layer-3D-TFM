@@ -1,8 +1,9 @@
-function [track] = removeOutlierPSPT(varargin)
-% [track] = removeOutlierPSPT(varargin) Find Outliers in scattered Data 
+function [track] = removeOutlierTPT(varargin)
+% From TPT:
+% [track] = removeOutlierTPT(varargin) Find Outliers in scattered Data
 % based on residual method by:
 %
-% Westerweel, Jerry, and Fulvio Scarano. "Universal outlier detection for 
+% Westerweel, Jerry, and Fulvio Scarano. "Universal outlier detection for
 % PIV data." Experiments in fluids 39.6 (2005): 1096-1100.
 %
 % INPUTS
@@ -24,14 +25,14 @@ track = varargin{3};
 thres = varargin{4};
 
 %Number of neighbors to compute median and residual displacement
-nNeigh = 27; 
+nNeigh = 27;
 
 
 %%%%%%%%%%% Find Outliers %%%%%%%%%%%
 u = x1(track(track>0),:) - x0(track>0,:);    %Displacement
 u1 = u(:,1); u2 = u(:,2); u3 = u(:,3);  % Disp components
 
-x = x0(track>0,:);      % Data points for which displacement tracked. 
+x = x0(track>0,:);      % Data points for which displacement tracked.
 idx = knnsearch(x,x,'k',nNeigh);
 % idx = idx(:,2:end); % Remove first point. It's the self point
 un1 = zeros(size(idx)); un2 = un1; un3 = un1;
@@ -53,7 +54,7 @@ rn2 = abs(bsxfun(@plus,u2,-um2)); rn2 = rn2./r2;
 rn3 = abs(bsxfun(@plus,u3,-um3)); rn3 = rn3./r3;
 
 % Threshold out values
-ridx1 = rn1>thres; 
+ridx1 = rn1>thres;
 ridx2 = rn2>thres;
 ridx3 = rn3>thres;
 IDX = ridx1 | ridx2 | ridx3;
@@ -63,4 +64,3 @@ idx = find(track>0);
 track(idx(IDX)) = 0;
 
 end
-
