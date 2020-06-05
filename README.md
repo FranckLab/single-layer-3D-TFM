@@ -13,7 +13,9 @@ Repository for single-layer 3D TFM used for measuring cellular displacements and
  
 ## Running Single Layer 3D TFM
 
-Note: for more detailed guidelines see the user manual and our associate paper.
+Notes: 
+  - For example datasets (both real experiments and sythetic data) see our data storage repository for this project hosted by UW MINDS here: https://minds.wisconsin.edu/handle/1793/79908
+  - For more detailed guidelines see the user manual (SI) in our associate paper.
 
 ### Input 3D Image Stack Requirements
 * To check if the 3D image stack is approperiate, consult the orginal TPT guidelines and our associated paper [TPT](https://github.com/FranckLab/T-PT).
@@ -22,7 +24,7 @@ Note: for more detailed guidelines see the user manual and our associate paper.
 ### Running included example case
 0. Install and configure Matlab (with Image Processing and Statistics toolboxes) and Docker Desktop 
 1. Make sure that the main files are added to the path in Matlab and the data directory is configured correctly.
-2. Download and save the [example data]( ....  UW MINDS .....) in the example folder. 
+2. Download and save the [example data](https://minds.wisconsin.edu/handle/1793/79908) in the example folder. 
 3. Run the `SL3DTFM_runscript.m` script in Matlab, then start Docker and run the `run_sl_tfm_ps.ps1` in PowerShell, and finally run the `SL3DTFM_postFEniCS.m` script in Matlab.
 
 ### Health warning!
