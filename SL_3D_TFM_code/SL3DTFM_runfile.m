@@ -74,7 +74,8 @@ for multipoint = 1:length(multipoint_names)
     matName{multipoint} = cell(total_images{multipoint},1);
     for img_num = start_img{multipoint}:start_img{multipoint}+total_images{multipoint}-1
         matName{multipoint}{img_num} = ...
-            funConverTif2Mat(data_dir,image_dir,multipoint_names{multipoint},img_num,z_height{multipoint},isCrop{multipoint},Icrop{multipoint});
+            funConverTif2Mat(data_dir,image_dir,multipoint_names{multipoint},img_num,...
+                z_height{multipoint},isCrop{multipoint},Icrop{multipoint});
         fprintf('Image number: %i of %i completed\n',img_num,total_images{multipoint})
     end
 
@@ -127,7 +128,7 @@ img_size = cell(length(multipoint_names),1);
 for multipoint = 1:length(multipoint_names)
     fprintf('\nWorking on multipoint %i of %i\n',multipoint,length(multipoint_names))
 
-    if ~exist('matName', 'var') || ~exist('PSF', 'var') %Load matNames and PSF if using converted matFiles with existing PSF
+    if ~exist('matName', 'var') || ~exist('PSF', 'var') %Load if using converted matFiles with existing PSF
         for i = 1:length(multipoint_names)
             mat_dir{i} = [data_dir, 'mat files', filesep, multipoint_names{i}, filesep];
             matFiles{i} = dir(fullfile(mat_dir{i}, '*.mat'));
@@ -201,7 +202,8 @@ for multipoint = 1:length(multipoint_names)
 
 end
 
-save([data_dir,data_name,'_',save_file_descriptor,'_','localizationtrackingdispresults'], 'x', 'track', 'x0', 'x1', 'u', 'beadParam', 'tptParam')
+save([data_dir,data_name,'_',save_file_descriptor,'_','localizationtrackingdispresults'], 'x',...
+    'track', 'x0', 'x1', 'u', 'beadParam', 'tptParam')
 disp('Localization and particle tracking complete')
 
 
