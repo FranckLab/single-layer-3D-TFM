@@ -1,5 +1,5 @@
 # single-layer-3D-TFM
-Repository for single-layer 3D TFM used for measuring cellular displacements and tractions from a gel with a single bead layer imaged with epifluorescence microscopy. This contains the Matlab, Python, and PowerShell scripts needed to run our single-layer 3D TFM algorithm. This algorithm uses epifluorescence image stacks of a single layer of fluorescent micro-beads embedded at a gel surface to reconstuct 3D surface layer displacements and tractions, given approperiate material properties for the gel. See our paper describing this process for more details: ..........
+Repository for single-layer 3D TFM scripts used for measuring cellular displacements and tractions from a gel with a single bead layer imaged with epifluorescence microscopy. This contains the Matlab, Python, and PowerShell scripts needed to run our single-layer 3D TFM algorithm. This algorithm uses epifluorescence image stacks with a single layer of fluorescent micro-beads embedded at a gel surface to reconstuct 3D surface layer displacements and tractions, given approperiate material properties for the gel. See our paper describing this process for more details: ..........
 
 
 
@@ -28,17 +28,17 @@ Notes:
 3. Run the `SL3DTFM_runscript.m` script in Matlab, then start Docker and run the `run_sl_tfm_ps.ps1` in PowerShell, and finally run the `SL3DTFM_postFEniCS.m` script in Matlab.
 
 ### Health warning!
-Deconvolution and Docker both may require a **large amount of RAM**. We recommend a minimum of 32GB system RAM. To avoid issues when running Matlab, then start Docker and run the FEA, since at least 16GB of RAM should be allocated to Docker and deconvolution may also require more than 16GB RAM.
+Deconvolution and Docker both may require a **large amount of RAM**. We recommend a minimum of 32GB system RAM. To avoid issues, run the Matlab displacement computations, then start Docker and run the FEA. This works best since at least 16GB of RAM should be allocated to Docker and deconvolution may also require more than 16GB RAM depending on settings and image sizes.
 
 ## 3rd party files
-We have used several 3rd party Matlab scripts, cheifly from the Matlab File Exchange, and have included relevent licences ins subfolder here.
-* Supplement m files from the MATLAB file exchange include:
- - gridfit.m
- - imagesc3D.m
- - inpaint_nans3.m
- - regionprops3d.m
- - regularizeNd.m
- - turbo.m
+We have used several 3rd party Matlab scripts, cheifly from the Matlab File Exchange, and have included relevent licences in a subfolder.
+* Supplemental `.m`-files from the MATLAB file exchange include:
+ - `gridfit.m`
+ - `imagesc3D.m`
+ - `inpaint_nans3.m`
+ - `regionprops3d.m`
+ - `regularizeNd.m`
+ - `turbo.m`
  
 ## FAQ
 
@@ -71,5 +71,5 @@ If used please cite:
 ```
 
 ## Contact and support
-For questions, please first refer to [FAQ](https://github.com/FranckLab/single-layer-3D-TFM#faq) and [Questions/Issues](https://github.com/FranckLab/single-layer-3D-TFM/issues). Add a new question if similar issue hasn't been reported. The author's contact information can be found at [Franck Lab](https://www.franck.engr.wisc.edu).
+For questions, please first refer to [FAQ](https://github.com/FranckLab/single-layer-3D-TFM#faq) and [Questions/Issues](https://github.com/FranckLab/single-layer-3D-TFM/issues). Add a new question if similar issue has not yet been reported. The author's contact information can be found at [Franck Lab](https://www.franck.engr.wisc.edu).
 
