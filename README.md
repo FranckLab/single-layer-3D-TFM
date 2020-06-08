@@ -18,7 +18,7 @@ Notes:
   - For more detailed guidelines see the user manual (SI) in our associate paper.
 
 ### Input 3D Image Stack Requirements
-* To check if the 3D image stack is approperiate, consult the orginal TPT guidelines and our associated paper [TPT](https://github.com/FranckLab/T-PT).
+* To check if the 3D image stack is approperiate, consult the orginal TPT guidelines and our associated [TPT paper](https://github.com/FranckLab/T-PT).
 * The 3D image stack should be saved and organized as outlined in the Supplimental Information in our associated paper. 
 
 ### Running included example case
