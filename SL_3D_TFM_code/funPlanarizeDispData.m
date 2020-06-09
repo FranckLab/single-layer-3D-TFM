@@ -66,14 +66,14 @@ while change_param == 0
             zPlaneFitMax{t} = indx0_3_ref_median + zPlane_std_alpha*(4-tempi)*indx0_3_ref_std;
         end
         figure; plot3(x0{t}(:,1),x0{t}(:,2),x0{t}(:,3),'k.')
-        title(['Tracked beads in reference image, multipoint: ',mpname,', timepoint: ', num2str(t)])
+        title(['Tracked beads in reference image, multipoint: ',mpname,', timepoint: ', num2str(t)],'interpreter','none')
         hold on
         plot3(x0{t}(x0tracked{t},1),x0{t}(x0tracked{t},2),x0{t}(x0tracked{t},3),'ro')
     end
     prompt = '  Do you want to adjust outlier removal from the plane? Y/N?: ';
     YN = input(prompt, 's');
     if YN == 'Y' || YN == 'y'
-        prompt = '    How many standard deviations outside of mean do you want to include points in the plane (default: 3)?: ';
+        prompt = '    How many standard deviations away from the mean to include points in the plane (default: 3)?: ';
         zPlane_std_alpha = input(prompt);
     elseif YN == 'N' || YN == 'n'
         change_param = 1;
@@ -105,7 +105,8 @@ for t = 1:length(x0)
     figure; subplot(1,2,1); plot3(x0{t}(:,1),x0{t}(:,2),x0{t}(:,3),'b.');
     hold on
     plot3(x0{t}(x0tracked{t},1),x0{t}(x0tracked{t},2),x0{t}(x0tracked{t},3),'ko');
-    title(['Plane fit in reference image, multipoint: ',mpname,', timepoint: ', num2str(t)],'fontweight','normal');
+    title(['Plane fit in reference image, multipoint: ',mpname,...
+        ', timepoint: ', num2str(t)],'fontweight','normal','interpreter','none');
 
     % Cubic interface shape model
     Atemp0 = [ones(length(x0tracked{t}),1), x0{t}(x0tracked{t},1), x0{t}(x0tracked{t},2), ...
@@ -116,7 +117,8 @@ for t = 1:length(x0)
     % solve for the cubic surface coeffs for the reference image
     zPlaneCoeff0{t} = Atemp0\x0{t}(x0tracked{t},3);
     zGrid0{t} = zPlaneCoeff0{t}(1) + zPlaneCoeff0{t}(2)*gridPts{t}{1} + zPlaneCoeff0{t}(3)*gridPts{t}{2} + ...
-        zPlaneCoeff0{t}(4)*gridPts{t}{1}.^2 + zPlaneCoeff0{t}(5)*gridPts{t}{1}.*gridPts{t}{2} + zPlaneCoeff0{t}(6)*gridPts{t}{2}.^2 + ...
+        zPlaneCoeff0{t}(4)*gridPts{t}{1}.^2 + zPlaneCoeff0{t}(5)...
+        *gridPts{t}{1}.*gridPts{t}{2} + zPlaneCoeff0{t}(6)*gridPts{t}{2}.^2 + ...
         zPlaneCoeff0{t}(7)*gridPts{t}{1}.^3 + zPlaneCoeff0{t}(8)*gridPts{t}{1}.^2.*gridPts{t}{2} + ...
         zPlaneCoeff0{t}(9)*gridPts{t}{1}.*gridPts{t}{2}.^2 + zPlaneCoeff0{t}(10)*gridPts{t}{2}.^3;
 
@@ -128,7 +130,8 @@ for t = 1:length(x0)
     subplot(1,2,2); plot3(x1{t}(:,1),x1{t}(:,2),x1{t}(:,3),'r.');
     hold on
     plot3(x1{t}(x1tracked{t},1),x1{t}(x1tracked{t},2),x1{t}(x1tracked{t},3),'ko');
-    title(['Plane fit in deformed image, multipoint: ',mpname,', timepoint: ', num2str(t)],'fontweight','normal');
+    title(['Plane fit in deformed image, multipoint: ',mpname,', timepoint: ',...
+        num2str(t)],'fontweight','normal','interpreter','none');
 
     % Cubic interface shape model
     Atemp1 = [ones(length(x1tracked{t}),1), x1{t}(x1tracked{t},1), x1{t}(x1tracked{t},2), ...
@@ -139,7 +142,8 @@ for t = 1:length(x0)
     % solve for deformed plane fit coeffs
     zPlaneCoeff1{t} = Atemp1\x1{t}(x1tracked{t},3);
     zGrid1{t} = zPlaneCoeff1{t}(1) + zPlaneCoeff1{t}(2)*gridPts{t}{1} + zPlaneCoeff1{t}(3)*gridPts{t}{2} + ...
-        zPlaneCoeff1{t}(4)*gridPts{t}{1}.^2 + zPlaneCoeff1{t}(5)*gridPts{t}{1}.*gridPts{t}{2} + zPlaneCoeff1{t}(6)*gridPts{t}{2}.^2 + ...
+        zPlaneCoeff1{t}(4)*gridPts{t}{1}.^2 + zPlaneCoeff1{t}(5)...
+        *gridPts{t}{1}.*gridPts{t}{2} + zPlaneCoeff1{t}(6)*gridPts{t}{2}.^2 + ...
         zPlaneCoeff1{t}(7)*gridPts{t}{1}.^3 + zPlaneCoeff1{t}(8)*gridPts{t}{1}.^2.*gridPts{t}{2} + ...
         zPlaneCoeff1{t}(9)*gridPts{t}{1}.*gridPts{t}{2}.^2 + zPlaneCoeff1{t}(10)*gridPts{t}{2}.^3;
 
@@ -158,8 +162,10 @@ for t = 1:length(track)
     u_scplane{t} = u{t}(x0tracked{t},:);
 
     winstepsize = [1,1,1];
-    xList{t} = ceil(min(x0{t}(x0tracked{t},1)))-winstepsize(1) : winstepsize(1) : floor(max(x0{t}(x0tracked{t},1)))+winstepsize(1);
-    yList{t} = ceil(min(x0{t}(x0tracked{t},2)))-winstepsize(2) : winstepsize(2) : floor(max(x0{t}(x0tracked{t},2)))+winstepsize(2);
+    xList{t} = ceil(min(x0{t}(x0tracked{t},1)))-winstepsize(1):winstepsize(1):...
+        floor(max(x0{t}(x0tracked{t},1)))+winstepsize(1);
+    yList{t} = ceil(min(x0{t}(x0tracked{t},2)))-winstepsize(2):winstepsize(2)...
+        :floor(max(x0{t}(x0tracked{t},2)))+winstepsize(2);
     [gridPts{t}{2},gridPts{t}{1}] = meshgrid(yList{t},xList{t});
 end
 % ====== Compute disp x and y with regularization ======
@@ -168,8 +174,10 @@ smoothnessChangeOrNot = 0;
 while smoothnessChangeOrNot == 0
     for t = 1:length(track)
         % ------------- Regularization ----------------
-        u_plane{t}{1} = regularizeNd([x0{t}(x0tracked{t},1),x0{t}(x0tracked{t},2)], u_scplane{t}(:,1), {xList{t},yList{t}}, smoothness_xy);
-        u_plane{t}{2} = regularizeNd([x0{t}(x0tracked{t},1),x0{t}(x0tracked{t},2)], u_scplane{t}(:,2), {xList{t},yList{t}}, smoothness_xy);
+        u_plane{t}{1} = regularizeNd([x0{t}(x0tracked{t},1),x0{t}(x0tracked{t},2)],...
+            u_scplane{t}(:,1), {xList{t},yList{t}}, smoothness_xy);
+        u_plane{t}{2} = regularizeNd([x0{t}(x0tracked{t},1),x0{t}(x0tracked{t},2)],...
+            u_scplane{t}(:,2), {xList{t},yList{t}}, smoothness_xy);
 
         % ------------- Visualization -----------------
         figure; subplot(1,2,1); surf(gridPts{t}{1},gridPts{t}{2},u_plane{t}{1},'edgecolor','none');
@@ -179,7 +187,8 @@ while smoothnessChangeOrNot == 0
         set(gca,'fontsize',18);
         colormap(cMap);
         box on; grid on; grid minor;
-        title({'x-Displacement (um) Smoothness Check'; ['Multipoint: ',mpname,', Timepoint: ', num2str(t)]},'fontweight','normal');
+        title({'x-Displacement (um) Smoothness Check'; ['Multipoint: ',mpname,...
+            ', Timepoint: ', num2str(t)]},'fontweight','normal','interpreter','none');
         ax = gca;
         ax.Position = ax.Position - [0 0 0.2 0.2];
         cb = colorbar('Location','eastoutside');
@@ -191,7 +200,8 @@ while smoothnessChangeOrNot == 0
         hold on
         plot3(x0{t}(x0tracked{t},1),x0{t}(x0tracked{t},2),u_scplane{t}(:,2),'ro')
         set(gca,'fontsize',18);  colormap(cMap); box on; grid on; grid minor;
-        title({'y-Displacement (um) Smoothness Check'; ['Multipoint: ',mpname,', Timepoint: ', num2str(t)]},'fontweight','normal');
+        title({'y-Displacement (um) Smoothness Check'; ['Multipoint: ',mpname,...
+            ', Timepoint: ', num2str(t)]},'fontweight','normal','interpreter','none');
         ax = gca; ax.Position = ax.Position - [0 0 .2 .2];
         cb = colorbar('Location','eastoutside');  set(cb,'fontsize',16);
         cb.Position = cb.Position + [0.24 0 0 0]; %caxis([-1.2,0.6]);
@@ -216,14 +226,16 @@ smoothnessChangeOrNot = 0;
 while smoothnessChangeOrNot == 0
     for t = 1:length(track)
         % ------------- Regularization ----------------
-        u_plane{t}{3} = regularizeNd([x0{t}(x0tracked{t},1),x0{t}(x0tracked{t},2)], u_scplane{t}(:,3), {xList{t},yList{t}}, smoothness_z);
+        u_plane{t}{3} = regularizeNd([x0{t}(x0tracked{t},1),x0{t}(x0tracked{t},2)],...
+            u_scplane{t}(:,3), {xList{t},yList{t}}, smoothness_z);
 
         % ------------- Visualization -----------------
         figure; surf(gridPts{t}{1},gridPts{t}{2},u_plane{t}{3},'edgecolor','none');
         hold on
         plot3(x0{t}(x0tracked{t},1),x0{t}(x0tracked{t},2),u_scplane{t}(:,3),'ro')
         set(gca,'fontsize',18);  colormap(cMap); box on; grid on; grid minor;
-        title({'z-Displacement (um) Smoothness Check'; ['Multipoint: ',mpname,', Timepoint: ', num2str(t)]},'fontweight','normal');
+        title({'z-Displacement (um) Smoothness Check'; ['Multipoint: ',mpname,...
+            ', Timepoint: ', num2str(t)]},'fontweight','normal','interpreter','none');
         ax = gca; ax.Position = ax.Position - [0 0 .2 .2];
         cb = colorbar('Location','eastoutside');  set(cb,'fontsize',16);
         cb.Position = cb.Position + [0.24 0 0 0]; % caxis([-1.2,0.6]);
@@ -249,7 +261,8 @@ for t = 1 : length(x0)
     figure, surf(gridPts{t}{1},gridPts{t}{2},u_plane{t}{1},'edgecolor','none');
     %hold on, plot3(x0(x0tracked,1),x0(x0tracked,2),dispx,'ro'); set(gcf,'color','w');
     set(gca,'fontsize',18);  colormap(cMap); box on; grid on; grid minor;
-    title({'x-Displacement (um)'; ['Multipoint: ',mpname,', Timepoint: ', num2str(t)]},'fontweight','normal');
+    title({'x-Displacement (um)'; ['Multipoint: ',mpname,', Timepoint: ',...
+        num2str(t)]},'fontweight','normal','interpreter','none');
     ax = gca; ax.Position = ax.Position - [0 0 .2 .2];
     cb = colorbar('Location','eastoutside');  set(cb,'fontsize',16);
     cb.Position = cb.Position + [0.24 0 0 0]; %caxis([-1.2,0.6]);
@@ -257,7 +270,8 @@ for t = 1 : length(x0)
     figure, surf(gridPts{t}{1},gridPts{t}{2},u_plane{t}{2},'edgecolor','none');
     %hold on, plot3(x0(x0tracked,1),x0(x0tracked,2),dispy,'ro'); set(gcf,'color','w');
     set(gca,'fontsize',18);  colormap(cMap); box on; grid on; grid minor;
-    title({'y-Displacement (um)'; ['Multipoint: ',mpname,', Timepoint: ', num2str(t)]},'fontweight','normal');
+    title({'y-Displacement (um)'; ['Multipoint: ',mpname,', Timepoint: ',...
+        num2str(t)]},'fontweight','normal','interpreter','none');
     ax = gca; ax.Position = ax.Position - [0 0 .2 .2];
     cb = colorbar('Location','eastoutside');  set(cb,'fontsize',16);
     cb.Position = cb.Position + [0.24 0 0 0]; %caxis([-1.2,0.6]);
@@ -265,7 +279,8 @@ for t = 1 : length(x0)
     figure, surf(gridPts{t}{1},gridPts{t}{2},u_plane{t}{3},'edgecolor','none');
     %hold on, plot3(x0(x0tracked,1),x0(x0tracked,2),dispz,'ro'); set(gcf,'color','w');
     set(gca,'fontsize',18);  colormap(cMap); box on; grid on; grid minor;
-    title({'z-Displacement (um)'; ['Multipoint: ',mpname,', Timepoint: ', num2str(t)]},'fontweight','normal');
+    title({'z-Displacement (um)'; ['Multipoint: ',mpname,', Timepoint: ',...
+        num2str(t)]},'fontweight','normal','interpreter','none');
     ax = gca; ax.Position = ax.Position - [0 0 .2 .2];
     cb = colorbar('Location','eastoutside');  set(cb,'fontsize',16);
     cb.Position = cb.Position + [0.24 0 0 0]; % caxis([-1.2,0.6]);

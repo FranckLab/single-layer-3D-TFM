@@ -1,0 +1,34 @@
+~~~~~~~~~~~ Single-layer TPT-based Traction Force Microscopy ~~~~~~~~~~~~~~
+
+Instructions for running the FEniCS-based finite-element solver with Docker 
+Desktop (tested on Win10 Ent 1803). 
+
+Actions in the OS are indicated with "->" and entries in the command line 
+start with "$" (do not include the $ in the command to run). Statements in 
+"<>" are to be replaced with user-specific info (remove the "<>").
+
+AKL, 2020.06.08
+
+0. Having a VirtualBox (e.g. for Docker Toolbox) running may cause issues, 
+   see https://docs.docker.com/machine/get-started/. Uninstalling/disabling 
+   may be required.
+
+1.  Docker Desktop setup:
+	a.  Download Docker Desktop version 2.2.x from 
+                https://www.docker.com/products/docker-desktop
+            you will need to create a Docker Hub account (it is free) to download. 
+	      -> Run the installer (leave 'Windows Containers' option unchecked)
+
+	c.   Once installed, make sure files can be shared:
+	      -> Go to "settings" (from the Docker tray icon) and the
+                  "Resources -> File sharing" menu  
+              -> Select the drive(s) from which you wish to run FEniCS (where 
+                  your data is) 
+
+	d.   Also ensure Docker has sufficient system resources:
+	      -> Go to "settings" (from the Docker tray icon) and the
+                  "Resources -> Advanced" menu  
+              -> Move sliders appropriately. I usually use 2 CPUs, 16+GB RAM, 
+                  4 GB Swap, and 64 GB Disk image size (only about 8GB is needed)
+
+END OF DOCUMENT

@@ -64,15 +64,15 @@ end
 fclose(fid);
 
 %% Change cells
-PYfile{23} = sprintf('for stepNum in range(%i):',numSteps);
-PYfile{25} = sprintf('\tdata_name_in = "%s_%%03d" %% (stepNum)',nameIn);
-PYfile{26} = sprintf('\tdata_name_out = "%s_%%03d" %% (stepNum)',nameOut);
-PYfile{27} = sprintf('\tload_steps = %i',load_steps);
-PYfile{28} = sprintf('\tE = %0.5f',E);
-PYfile{29} = sprintf('\tnu = %0.5f',nu);
-PYfile{30} = sprintf('\tthickness = %0.5f',thickness);
-PYfile{31} = sprintf('\tx_center_norm = %0.5f',x_centroid_norm);
-PYfile{32} = sprintf('\ty_center_norm = %0.5f',y_centroid_norm);
+PYfile{26} = sprintf('for stepNum in range(%i):',numSteps);
+PYfile{28} = sprintf('\tdata_name_in = "%s_%%03d" %% (stepNum)',nameIn);
+PYfile{29} = sprintf('\tdata_name_out = "%s_%%03d" %% (stepNum)',nameOut);
+PYfile{30} = sprintf('\tload_steps = %i',load_steps);
+PYfile{31} = sprintf('\tE = %0.5f',E);
+PYfile{32} = sprintf('\tnu = %0.5f',nu);
+PYfile{33} = sprintf('\tthickness = %0.5f',thickness);
+PYfile{34} = sprintf('\tx_center_norm = %0.5f',x_centroid_norm);
+PYfile{35} = sprintf('\ty_center_norm = %0.5f',y_centroid_norm);
 
 %% Write the new .py text file
 fid = fopen(['sl_tfm_call_',multipoint_name,'.py'], 'w');
@@ -84,3 +84,4 @@ for ii = 1:numel(PYfile)
         fprintf(fid,'%s\n', PYfile{ii});
     end
 end
+fclose(fid);

@@ -133,7 +133,7 @@ for timePt = 1 : length(u_plane)
     ylim([ymin, ymax])
     ylabel(h_color, 'Displacement (um)');
 
-    title({'Cell Displacement'; ['Multipoint: ' mpname, ', Timepoint: ' num2str(timePt)]})
+    title({'Cell Displacement'; ['Multipoint: ' mpname, ', Timepoint: ' num2str(timePt)]},'interpreter','none')
     savefigname = [savedir, mpname, '_disp_tp_' num2str(timePt), '.png'];
     % Optional scale bar
 %     scalelength = 25; % desired scale bar length in um

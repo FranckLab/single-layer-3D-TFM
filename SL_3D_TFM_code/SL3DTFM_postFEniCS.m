@@ -24,14 +24,14 @@ cellBWfilename = 'exampleBWfile.mat';
 
 
 
-%% ---------------------------- LOAD RUN DATA -----------------------------------
+%% ---------------------------- LOAD DISP DATA -----------------------------------
 %   Load the prior setup and displacement data from the SL3DTFM_runfile.m script
 
 setup_data = load([data_dir,data_name,'_',save_file_descriptor,'_','all','_settings.mat']);
 disp_data = load([data_dir,data_name,'_',save_file_descriptor,'_displacementplottingdata.mat']);
 
 
-%% --------------------------- COMPUTATIONS ------------------------------------
+%% --------------------------- LOAD FENICS DATA ---------------------------------
 % Load the FEniCS output data files for each multipoint and time point (saved in
 % the base working directory).
 
@@ -40,11 +40,11 @@ for multipoint = 1:length(setup_data.multipoint_names)
     for timepoint = 1:(setup_data.total_images{multipoint}-1)
         tp = sprintf('%03d',timepoint-1);
         pts_fenics{multipoint}{timepoint} = load([data_name,'_',...
-            setup_data.multipoint_names{multipoint},'_fenicsOut_',tp,'quad9_pts_fenics.mat']);
+            setup_data.multipoint_names{multipoint},'_fenicsOut_',tp,'_pts_fenics.mat']);
         u_fenics{multipoint}{timepoint} = load([data_name,'_',...
-            setup_data.multipoint_names{multipoint},'_fenicsOut_',tp,'quad9_u_fenics.mat']);
+            setup_data.multipoint_names{multipoint},'_fenicsOut_',tp,'_u_fenics.mat']);
         stress_fenics{multipoint}{timepoint} = load([data_name,'_',...
-            setup_data.multipoint_names{multipoint},'_fenicsOut_',tp,'quad9_stress.mat']);
+            setup_data.multipoint_names{multipoint},'_fenicsOut_',tp,'_stress.mat']);
     end
 end
 disp('Done Loading Data')
@@ -57,7 +57,8 @@ disp('Done Loading Data')
 
 for multipoint = 1:length(setup_data.multipoint_names)
 
-    fprintf('\n Computing surface normals and tractions for multipoint %i of %i\n',multipoint,length(setup_data.multipoint_names))
+    fprintf('\n Computing surface normals and tractions for multipoint %i of %i\n',...
+        multipoint,length(setup_data.multipoint_names))
 
     for timepoint = 1:(setup_data.total_images{multipoint}-1)
         vertices = [pts_fenics{multipoint}{timepoint}.x;...
@@ -122,27 +123,37 @@ disp('Surface normal and traction computations complete')
 
 %% Traction and displacement visualization (simple quiver plot)
 for multipoint = 1 : length(setup_data.multipoint_names)
-    fprintf('\n Showing displacement and traction for multipoint %i of %i\n',multipoint,length(setup_data.multipoint_names))
+    fprintf('\n Showing displacement and traction for multipoint %i of %i\n',...
+        multipoint,length(setup_data.multipoint_names))
     for timepoint = 1:(setup_data.total_images{multipoint}-1)
     figure;
-    quiver3(pts_normals{multipoint}{timepoint}{1}',pts_normals{multipoint}{timepoint}{2}',pts_normals{multipoint}{timepoint}{3}',...
-        top_surface_disp{multipoint}{timepoint}{ii},top_surface_disp{multipoint}{timepoint}{ii},top_surface_disp{multipoint}{timepoint}{ii},1)
-    title(['Surface Displacement, Multipoint: ', setup_data.multipoint_names{multipoint}, ', Time point: ' num2str(timepoint)])
-
+    quiver3(pts_normals{multipoint}{timepoint}{1}',pts_normals{multipoint}{timepoint}{2}',...
+        pts_normals{multipoint}{timepoint}{3}',...
+        top_surface_disp{multipoint}{timepoint}{ii},top_surface_disp{multipoint}{timepoint}{ii},...
+        top_surface_disp{multipoint}{timepoint}{ii},1)
+    title(['Surface Displacement Vectors, Multipoint: ', setup_data.multipoint_names{multipoint},...
+        ', Time point: ' num2str(timepoint)],'interpreter','none')
+    xlabel('x, \mum')
+    ylabel('y, \mum')
+    zlabel('z, \mum')
+    
     figure
     trisurf(tri{multipoint}{timepoint},'FaceColor',[0.8 0.8 1.0]);
     axis equal
-    xlabel('x')
-    xlabel('y')
-    xlabel('z')
 
     hold on
-    quiver3(pts_normals{multipoint}{timepoint}{1}',pts_normals{multipoint}{timepoint}{2}',pts_normals{multipoint}{timepoint}{3}', ...
+    quiver3(pts_normals{multipoint}{timepoint}{1}',pts_normals{multipoint}{timepoint}{2}',...
+        pts_normals{multipoint}{timepoint}{3}', ...
         ti{multipoint}{timepoint}{1},ti{multipoint}{timepoint}{2},ti{multipoint}{timepoint}{3},1,'Color','b');
-    title(['Tractions Plotted on FE Mesh, Multipoint: ', setup_data.multipoint_names{multipoint}, ', Time point: ' num2str(timepoint)])
-
+    title(['Traction Vectors on FE Mesh, Multipoint: ', setup_data.multipoint_names{multipoint}, ...
+        ', Time point: ' num2str(timepoint)],'interpreter','none')
+    xlabel('x, \mum')
+    ylabel('y, \mum')
+    zlabel('z, \mum')
+    
 %     plot_trac_simple(tri{multipoint}{timepoint},ti{multipoint}{timepoint},top_surface_deformed{multipoint}{timepoint})
-%     title({'Tractions shown as a cone plot, displacement as a surface contour plot';['Multipoint: ', setup_data.multipoint_names{multipoint}, ', Time point: ' num2str(timepoint)]})
+%     title({'Tractions shown as a cone plot, displacement as a surface contour plot';...
+%     ['Multipoint: ', setup_data.multipoint_names{multipoint}, ', Time point: ' num2str(timepoint)]})
     end
 end
 
@@ -154,7 +165,7 @@ for multipoint = 1 : length(setup_data.multipoint_names)
     density = 2;            % smaller number = higher density
     coneSize = 0.008;       % smaller number = smaller cone size
 
-    funPlotTraction(ti{multipoint},top_surface_deformed{multipoint}, ...
+    funPlotTraction(ti{multipoint},top_surface_deformed{multipoint}, setup_data.um2px,...
         disp_data.BW{multipoint}, density, coneSize, setup_data.multipoint_names{multipoint},...
         setup_data.isfigCrop{multipoint}, setup_data.figCrop{multipoint}, data_dir)
 

@@ -1,0 +1,36 @@
+~~~~~~~~~~~ Single-layer TPT-based Traction Force Microscopy ~~~~~~~~~~~~~~
+
+Instructions for running the FEniCS-based finite-element solver for Windows 7.
+
+Actions in the OS are indicated with "->" and entries in the Docker
+Quickstart command line start with "$" (do not include the $ in the
+command to run). Statements in "<>" are to be replaced with user-specific
+info (remove the "<>").
+
+AKL, 2019.06.29
+
+
+1. Install "Docker Toolbox" (not "Docker for Windows")
+	a. https://docs.docker.com/toolbox/toolbox_install_windows/
+			-> Download and run installer (check the "install VirtualBox option, restart may be required)
+	b. Once installed, check via that it is set up properly with:
+		-> open Docker Quickstart Terminal
+			$docker run hello-world
+	c. You may need to disable Hyper-V:
+			-> start menu search "Turn Windows Features On or Off"
+			-> open and disable Hyper-V checkbox (restart may be required)
+	   Or turn on/off virtualization in the BIOS
+
+
+2. In the Docker Quickstart Terminal set up and run FEniCS
+	a. Change to the project directory (due to FEniCS limitation it MUST be in "c:/Users/"):
+		-> open Docker Quickstart Terminal
+            $cd <project directory>
+	b. Set the run-script to be executable:
+            $chmod +x ./run_sl_tfm.sh
+	c. Run the FEniCS package:
+			$./run_sl_tfm_bash.sh
+
+
+
+END OF DOCUMENT

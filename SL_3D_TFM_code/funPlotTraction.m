@@ -1,4 +1,4 @@
-function [cellcentroid] = funPlotTraction(trac, points, BW, density, coneSize, mpname, isfigCrop, figCrop, savefolder)
+function [cellcentroid] = funPlotTraction(trac, points, um2px, BW, density, coneSize, mpname, isfigCrop, figCrop, savefolder)
 % Plots and saves figures of a cone plot of FE-computed traction data using
 % colormap Turbo (Copyright 2020, Daniel Fortunato. See:
 %  https://www.mathworks.com/matlabcentral/fileexchange/74662-turbo) along
@@ -9,6 +9,7 @@ function [cellcentroid] = funPlotTraction(trac, points, BW, density, coneSize, m
 % trac      : surface traction 3D vector components per each time stack.
 %             Output format - trac{timePoint}{component}. trac{t}{4} - magnitude
 % points    : locations at which traction in sampled
+% um2px     : micrometer to pixel conversion for [x,y,z]
 % BW        : 3D matrix of black and white (double format) cell image
 % density   : density of cones for coneplot
 % coneSize 	: size of cones for coneplot
@@ -78,7 +79,11 @@ for timePt = 1 : length(trac)
     n{1} = 1:sizeBW(1);
     n{2} = 1:sizeBW(1);
     [n{:}] = ndgrid(n{:});
-
+    
+    for ii = 1:length(n)
+        n{ii} = um2px(ii)*n{ii};
+    end
+    
     % Interpolate traction on the deformed grid
     for i = 1:3
         F = scatteredInterpolant(x(:,1), x(:,2), ti(:,i), 'natural', 'none');
@@ -151,9 +156,9 @@ for timePt = 1 : length(trac)
 
     xlim([xmin, xmax])
     ylim([ymin, ymax])
-    ylabel(h_color, 'Traction Magnitude (pN)');
+    ylabel(h_color, 'Traction Magnitude (Pa)');
 
-    title({'Cell Traction'; ['Multipoint: ' mpname, ', Timepoint: ' num2str(timePt)]})
+    title({'Cell Traction'; ['Multipoint: ' mpname, ', Timepoint: ' num2str(timePt)]},'interpreter','none')
     savefigname = [savedir, mpname, '_trac_tp_' num2str(timePt), '.png'];
     % Optional scale bar
 %     scalelength = 25; % desired scale bar length in um

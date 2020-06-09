@@ -1,0 +1,34 @@
+~~~~~~~~~~~ Single-layer TPT-based Traction Force Microscopy ~~~~~~~~~~~~~~
+
+Instructions for running the FEniCS-based finite-element solver with Docker 
+Desktop (tested on Win10 Ent 1803). 
+
+Actions in the OS are indicated with "->" and entries in the command line 
+start with "$" (do not include the $ in the command to run). Statements in 
+"<>" are to be replaced with user-specific info (remove the "<>").
+
+AKL, 2020.06.08
+
+0. Have Docker Desktop running and configured (see "setting_up_DockerDesktop.text")
+
+1. Running the FEniCS project script from PowerShell:
+	a.  Open Windows PowerShell ('PS') 
+              -> start menu
+              -> Windows PowerShell (opens a blue and white command line prompt)
+
+	b.  Change to your TFM run folder 
+                $cd <project directory> 
+                (e.g. I use "cd C:\Users\<username>\Desktop\fenics_test\")
+
+	c.  Every time a new PS instance is opened (so we don't add a security hole) 
+            allow only that instance of PS to run scripts:
+		$Set-ExecutionPolicy -ExecutionPolicy Unrestricted -Scope process
+    	        -> Confirm $Y (type 'Y' or 'A' and enter) at the prompt
+
+	d.  Run the PS script with:
+	        $.\run_sl_tfm_ps.ps1
+            this should automatically find all multipoint files in the folder and 
+            run all the time points processed in the Matlab runscript
+
+
+END OF DOCUMENT

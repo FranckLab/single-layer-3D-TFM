@@ -17,7 +17,7 @@
 %Set up the INPUT SETUP block with the information for your dataset
 %
 % Lauren Hazlett, Alex Landauer, Mohak Patel, Hadley Witt, Jin Yang
-% March, 2020
+% June, 2020
 % Franck Lab and Reichner Lab; Brown Univerisity, RI Hospital, and UW - Madison
 
 clear all
@@ -74,7 +74,8 @@ for multipoint = 1:length(multipoint_names)
     matName{multipoint} = cell(total_images{multipoint},1);
     for img_num = start_img{multipoint}:start_img{multipoint}+total_images{multipoint}-1
         matName{multipoint}{img_num} = ...
-            funConverTif2Mat(data_dir,image_dir,multipoint_names{multipoint},img_num,z_height{multipoint},isCrop{multipoint},Icrop{multipoint});
+            funConverTif2Mat(data_dir,image_dir,multipoint_names{multipoint},img_num,...
+                z_height{multipoint},isCrop{multipoint},Icrop{multipoint});
         fprintf('Image number: %i of %i completed\n',img_num,total_images{multipoint})
     end
 
@@ -127,7 +128,7 @@ img_size = cell(length(multipoint_names),1);
 for multipoint = 1:length(multipoint_names)
     fprintf('\nWorking on multipoint %i of %i\n',multipoint,length(multipoint_names))
 
-    if ~exist('matName', 'var') || ~exist('PSF', 'var') %Load matNames and PSF if using converted matFiles with existing PSF
+    if ~exist('matName', 'var') || ~exist('PSF', 'var') %Load if using converted matFiles with existing PSF
         for i = 1:length(multipoint_names)
             mat_dir{i} = [data_dir, 'mat files', filesep, multipoint_names{i}, filesep];
             matFiles{i} = dir(fullfile(mat_dir{i}, '*.mat'));
@@ -174,10 +175,10 @@ for multipoint = 1:length(multipoint_names)
     end
 
     % Bead Parameter
-    beadParam{1}.thres = 0.125;
-    beadParam{1}.minSize = 2;
-    beadParam{1}.maxSize = 200;
-    beadParam{1}.forloop = 1;
+    beadParam{multipoint}.thres = 0.125;
+    beadParam{multipoint}.minSize = 2;
+    beadParam{multipoint}.maxSize = 200;
+    beadParam{multipoint}.forloop = 1;
 
     % TPT Parameters
     tptParam{1}.knnFM = 10;
@@ -191,17 +192,19 @@ for multipoint = 1:length(multipoint_names)
        maxhist = 100;
        findParams = 1;
        while findParams == 1
-         [beadParam,findParams] = getBeadParams(deconvName{multipoint},maxhist,beadParam);
+         [beadParam{multipoint},findParams] = getBeadParams(deconvName{multipoint},maxhist,beadParam{multipoint});
        end
     end
 
+    cur_beadParam{1} = beadParam{multipoint};
     % Track Particles with TPT
     [x0{multipoint}, x1{multipoint}, x{multipoint}, track{multipoint}, u{multipoint}] = ...
-        funRunTPT(deconvName{multipoint}, beadParam, tptParam, runMode, um2px, multipoint_names{multipoint});
+        funRunTPT(deconvName{multipoint}, curBeadParam, tptParam, runMode, um2px, multipoint_names{multipoint});
 
 end
 
-save([data_dir,data_name,'_',save_file_descriptor,'_','localizationtrackingdispresults'], 'x', 'track', 'x0', 'x1', 'u', 'beadParam', 'tptParam')
+save([data_dir,data_name,'_',save_file_descriptor,'_','localizationtrackingdispresults'], 'x',...
+    'track', 'x0', 'x1', 'u', 'beadParam', 'tptParam')
 disp('Localization and particle tracking complete')
 
 
@@ -294,7 +297,6 @@ for multipoint = 1:length(multipoint_names)
     fprintf('\nWorking on multipoint %i of %i\n',multipoint,length(multipoint_names))
 
     %set up Python runscript for the FEniCS call
-
     load_steps = 10;
 
     %input and output in the CD for FEniCS I/O
@@ -330,10 +332,10 @@ for multipoint = 1:length(multipoint_names)
         dispdata(:,1) = u_x(:);
         dispdata(:,2) = u_y(:);
         dispdata(:,3) = u_z(:);
-        coor(:,1) = um2px(2)*gridPts{multipoint}{dataset_number}{1}(:);
+        coor(:,1) = um2px(1)*gridPts{multipoint}{dataset_number}{1}(:);
         coor(:,2) = um2px(2)*gridPts{multipoint}{dataset_number}{2}(:);
 %       coor(:,3) = gridPts{multipoint}{dataset_number}{3}(:);
-        coor(:,3) = ones(size(coor(:,1)))*0;%*thickness;
+        coor(:,3) = zeros(size(coor(:,1)));
         save(sprintf('%s_%03d.mat',saveNameIn(1:end-4),dataset_number-1),'coor','dispdata','um2px','-v7')
     end
 

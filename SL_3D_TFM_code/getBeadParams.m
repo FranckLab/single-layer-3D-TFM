@@ -28,8 +28,8 @@ function [beadParam,findParam] = getBeadParams(deconvName,maxhist,beadParam)
 load(deconvName{1});
 
 % Parameters
-minPixels = beadParameter.minSize;  %Minimum pixel count in blob for bead
-maxPixels = beadParameter.maxSize;  %Maximum pixel count in blob for bead
+minPixels = beadParam{1}.minSize;  %Minimum pixel count in blob for bead
+maxPixels = beadParam{1}.maxSize;  %Maximum pixel count in blob for bead
 
 %normalize and binarize (input I in locateParticles is similarly normalized)
 vol = vol/max(vol(:));
