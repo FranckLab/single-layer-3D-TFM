@@ -28,12 +28,12 @@ function [beadParam,findParam] = getBeadParams(deconvName,maxhist,beadParam)
 load(deconvName{1});
 
 % Parameters
-minPixels = beadParam{1}.minSize;  %Minimum pixel count in blob for bead
-maxPixels = beadParam{1}.maxSize;  %Maximum pixel count in blob for bead
+minPixels = beadParam.minSize;  %Minimum pixel count in blob for bead
+maxPixels = beadParam.maxSize;  %Maximum pixel count in blob for bead
 
 %normalize and binarize (input I in locateParticles is similarly normalized)
 vol = vol/max(vol(:));
-BW = vol>beadParam{1}.thres;
+BW = vol>beadParam.thres;
 
 %use same process as the locateParticles script
 CC = bwconncomp(BW);
@@ -59,20 +59,20 @@ disp('Recomputing bead identification... ')
 close;
 
 if ~isempty(thresh)
-    beadParam{1}.thres = thresh;
+    beadParam.thres = thresh;
 else
-    thresh = beadParam{1}.thres;
+    thresh = beadParam.thres;
 end
 if ~isempty(min_r)
-    beadParam{1}.minSize = min_r;
+    beadParam.minSize = min_r;
 end
 if ~isempty(max_r)
-    beadParam{1}.maxSize = max_r;
+    beadParam.maxSize = max_r;
 end
 
 
 %rerun to check thresh param
-BW = vol>beadParam{1}.thres;
+BW = vol>beadParam.thres;
 
 %use same process as the locateParticles script
 CC = bwconncomp(BW);

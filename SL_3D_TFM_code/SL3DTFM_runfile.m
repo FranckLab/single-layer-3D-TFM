@@ -195,11 +195,11 @@ for multipoint = 1:length(multipoint_names)
          [beadParam{multipoint},findParams] = getBeadParams(deconvName{multipoint},maxhist,beadParam{multipoint});
        end
     end
-
+    
     cur_beadParam{1} = beadParam{multipoint};
     % Track Particles with TPT
     [x0{multipoint}, x1{multipoint}, x{multipoint}, track{multipoint}, u{multipoint}] = ...
-        funRunTPT(deconvName{multipoint}, curBeadParam, tptParam, runMode, um2px, multipoint_names{multipoint});
+        funRunTPT(deconvName{multipoint}, cur_beadParam, tptParam, runMode, um2px, multipoint_names{multipoint});
 
 end
 
