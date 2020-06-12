@@ -4,7 +4,7 @@ Repository for single-layer 3D TFM scripts used for measuring cellular displacem
 
 
 ### Important pages
-* [Download latest version v1.0!](https://github.com/FranckLab/single-layer-3D-TFM/releases)
+* [Download latest version!](https://github.com/FranckLab/single-layer-3D-TFM/releases)
 * [Example data](https://minds.wisconsin.edu/handle/1793/79908)
 * [FAQ](https://github.com/FranckLab/single-layer-3D-TFM#faq)
 * [Questions/Issues](https://github.com/FranckLab/single-layer-3D-TFM/issues)
