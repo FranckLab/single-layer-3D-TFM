@@ -50,10 +50,10 @@ for timePt = 1 : length(trac)
     sizeBW = size(BW{timePt});
 
     if isfigCrop == 1
-        xmin = figCrop(3);
+        xmin = figCrop(2);
         ymin = figCrop(1);
         xmax = figCrop(4);
-        ymax = figCrop(2);
+        ymax = figCrop(3);
     elseif isfigCrop == 0
         xmin = 1;
         ymin = 1;
