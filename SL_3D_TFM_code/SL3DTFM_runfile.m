@@ -251,7 +251,7 @@ for multipoint = 1:length(multipoint_names)
         end
 
     % For visualization: density and size of cones for displacement coneplot
-    density = 6;            % smaller number = higher density
+    density = 6;           % smaller number = higher density
     coneSize = 0.02;       % smaller number = smaller cone size
 
     load([data_dir,cellBWfilename])
