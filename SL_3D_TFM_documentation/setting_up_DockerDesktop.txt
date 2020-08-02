@@ -14,18 +14,19 @@ AKL, 2020.06.08
    may be required.
 
 1.  Docker Desktop setup:
-	a.  Download Docker Desktop version 2.2.x from 
+	a.  Download Docker Desktop version 2.x.x from 
                 https://www.docker.com/products/docker-desktop
             you will need to create a Docker Hub account (it is free) to download. 
 	      -> Run the installer (leave 'Windows Containers' option unchecked)
-
-	c.   Once installed, make sure files can be shared:
+	
+	b.   Once installed, make sure files can be shared:
 	      -> Go to "settings" (from the Docker tray icon) and the
-                  "Resources -> File sharing" menu  
+                  "Resources -> File sharing" menu
+	      -> If you have WSL2 installed, uncheck the "Use the WSL2 base engine" box 
               -> Select the drive(s) from which you wish to run FEniCS (where 
                   your data is) 
 
-	d.   Also ensure Docker has sufficient system resources:
+	c.   Also ensure Docker has sufficient system resources:
 	      -> Go to "settings" (from the Docker tray icon) and the
                   "Resources -> Advanced" menu  
               -> Move sliders appropriately. I usually use 2 CPUs, 16+GB RAM, 
