@@ -49,22 +49,26 @@ for t = 1:length(track)
 
 end
 
-% Select beads near interface: median +/- std
+% Select beads near interface: best-fit plane +/- std
 % Select beads near interface for ref image
 zPlane_std_alpha = 3; %starting 'default' value of stds to use
 change_param = 0;
 while change_param == 0
     for t = 1:length(track)
         %get the top and bottom extents
-        zPlaneFitMin{t} = min(x0{t}(:,3));
-        zPlaneFitMax{t} = max(x0{t}(:,3));
-        for tempi = 1:3
-            [x0tracked{t}] = find(x0{t}(:,3)>zPlaneFitMin{t} & x0{t}(:,3)<zPlaneFitMax{t} );
-            indx0_3_ref_median = median(x0{t}(x0tracked{t},3));
-            indx0_3_ref_std = std(x0{t}(x0tracked{t},3));
-            zPlaneFitMin{t} = indx0_3_ref_median - zPlane_std_alpha*(4-tempi)*indx0_3_ref_std;
-            zPlaneFitMax{t} = indx0_3_ref_median + zPlane_std_alpha*(4-tempi)*indx0_3_ref_std;
-        end
+% %         zPlaneFitMin{t} = min(x0{t}(:,3));
+% %         zPlaneFitMax{t} = max(x0{t}(:,3));
+% %         for tempi = 1:3
+% %             [x0tracked{t}] = find(x0{t}(:,3)>zPlaneFitMin{t} & x0{t}(:,3)<zPlaneFitMax{t} );
+% %             indx0_3_ref_median = median(x0{t}(x0tracked{t},3));
+% %             indx0_3_ref_std = std(x0{t}(x0tracked{t},3));
+% %             zPlaneFitMin{t} = indx0_3_ref_median - zPlane_std_alpha*(4-tempi)*indx0_3_ref_std;
+% %             zPlaneFitMax{t} = indx0_3_ref_median + zPlane_std_alpha*(4-tempi)*indx0_3_ref_std;
+% %         end
+        idx_to_remove{t} = planeOutlierId(x0{t},zPlane_std_alpha);
+%         track_{t}{1}(idx_to_remove) = track{t}{1}();
+        x0tracked{t} = ~idx_to_remove{t};
+        
         figure; plot3(x0{t}(:,1),x0{t}(:,2),x0{t}(:,3),'k.')
         title(['Tracked beads in reference image, multipoint: ',mpname,', timepoint: ', num2str(t)],'interpreter','none')
         hold on
@@ -77,21 +81,24 @@ while change_param == 0
         zPlane_std_alpha = input(prompt);
     elseif YN == 'N' || YN == 'n'
         change_param = 1;
+    else 
+        disp('Please enter Y or N')
     end
     close all;
 end
 
-% Select beads near interface for deformed image using the same cutoff
-% parameters, but the deformed positions
+% remove the same beads from the deformed position list
 for t = 1:length(track)
-    zPlaneFitMin1{t} = min(x1{t}(:,3));
-    zPlaneFitMax1{t} = max(x1{t}(:,3));
-    for tempi = 1:3
-        [x1tracked{t}] = find(x1{t}(:,3)>zPlaneFitMin1{t} & x1{t}(:,3)<zPlaneFitMax1{t} );
-        indx1_3_def_median = median(x1{t}(x1tracked{t},3)); indx1_3_def_std = std(x1{t}(x1tracked{t},3));
-        zPlaneFitMin1{t} = indx1_3_def_median - zPlane_std_alpha*(4-tempi)*indx1_3_def_std;
-        zPlaneFitMax1{t} = indx1_3_def_median + zPlane_std_alpha*(4-tempi)*indx1_3_def_std;
-    end
+% %     zPlaneFitMin1{t} = min(x1{t}(:,3));
+% %     zPlaneFitMax1{t} = max(x1{t}(:,3));
+% %     for tempi = 1:3
+% %         [x1tracked{t}] = find(x1{t}(:,3)>zPlaneFitMin1{t} & x1{t}(:,3)<zPlaneFitMax1{t} );
+% %         indx1_3_def_median = median(x1{t}(x1tracked{t},3)); indx1_3_def_std = std(x1{t}(x1tracked{t},3));
+% %         zPlaneFitMin1{t} = indx1_3_def_median - zPlane_std_alpha*(4-tempi)*indx1_3_def_std;
+% %         zPlaneFitMax1{t} = indx1_3_def_median + zPlane_std_alpha*(4-tempi)*indx1_3_def_std;
+% %     end
+        x1tracked{t} = x0tracked{t};
+    
 end
 disp('Plane outliers removed')
 
@@ -100,7 +107,7 @@ disp('Plane outliers removed')
 % z(x,y) = a0 + a1*x + a2*y + a3*x^2 + a4*x*y + a5*y^2 + a6*x^3 + a7*x^2*y + a8*x*y^2 + a9*y^3;
 
 cMap = hsv(255);
-disp('Generating plane fits')
+disp('Generating surface fits')
 for t = 1:length(x0)
     figure; subplot(1,2,1); plot3(x0{t}(:,1),x0{t}(:,2),x0{t}(:,3),'b.');
     hold on
@@ -109,7 +116,7 @@ for t = 1:length(x0)
         ', timepoint: ', num2str(t)],'fontweight','normal','interpreter','none');
 
     % Cubic interface shape model
-    Atemp0 = [ones(length(x0tracked{t}),1), x0{t}(x0tracked{t},1), x0{t}(x0tracked{t},2), ...
+    Atemp0 = [ones(sum(x0tracked{t}),1), x0{t}(x0tracked{t},1), x0{t}(x0tracked{t},2), ...
         x0{t}(x0tracked{t},1).^2, x0{t}(x0tracked{t},1).*x0{t}(x0tracked{t},2), x0{t}(x0tracked{t},2).^2 , ...
         x0{t}(x0tracked{t},1).^3, x0{t}(x0tracked{t},1).^2.*x0{t}(x0tracked{t},2), ...
         x0{t}(x0tracked{t},1).*x0{t}(x0tracked{t},2).^2, x0{t}(x0tracked{t},2).^3];
@@ -134,7 +141,7 @@ for t = 1:length(x0)
         num2str(t)],'fontweight','normal','interpreter','none');
 
     % Cubic interface shape model
-    Atemp1 = [ones(length(x1tracked{t}),1), x1{t}(x1tracked{t},1), x1{t}(x1tracked{t},2), ...
+    Atemp1 = [ones(sum(x1tracked{t}),1), x1{t}(x1tracked{t},1), x1{t}(x1tracked{t},2), ...
         x1{t}(x1tracked{t},1).^2, x1{t}(x1tracked{t},1).*x1{t}(x1tracked{t},2), x1{t}(x1tracked{t},2).^2 , ...
         x1{t}(x1tracked{t},1).^3, x1{t}(x1tracked{t},1).^2.*x1{t}(x1tracked{t},2), ...
         x1{t}(x1tracked{t},1).*x1{t}(x1tracked{t},2).^2, x1{t}(x1tracked{t},2).^3];
@@ -286,5 +293,36 @@ for t = 1 : length(x0)
     cb.Position = cb.Position + [0.24 0 0 0]; % caxis([-1.2,0.6]);
 end
 
+
+end
+
+function outlier_idx = planeOutlierId(points,Nsigma)
+%Identify outliers Nsigma standard deviations or more from a best fit 
+% to plane a list of points in 3 dimensional space
+%
+% ============ INPUT ===============
+%
+% points = array of [x(:),y(:),z(:)] points to fit
+% Nsigma  = number of st devs away from the plane to remove
+%
+% Aug 4, 2020; AKL
+
+%get the best-fit plane coeffs
+plane_coefs = [ones(length(points),1),points(:,1:2)]\(-points(:,3));
+a = plane_coefs(2);
+b = plane_coefs(3);
+d = plane_coefs(1);
+c = 1;
+
+%compute the euclidean distance to the plane
+dist_to_plane = (a*points(:,1) + b*points(:,2) + c*points(:,3) + d)/...
+    sqrt(a^2 + b^2 + c^2);
+
+%compute stats
+dist_mean = mean(dist_to_plane);
+dist_std = std(dist_to_plane);
+
+%identify outliers
+outlier_idx = abs(dist_to_plane) > Nsigma*dist_std;
 
 end
