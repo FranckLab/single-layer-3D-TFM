@@ -54,8 +54,6 @@ We have used several 3rd party Matlab scripts, cheifly from the Matlab File Exch
 ## Cite
 If used please cite:
 
-.......
-
 ```bibtex
 
 @article{hazlett_epifluorescence-based_2020,
