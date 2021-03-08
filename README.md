@@ -1,5 +1,5 @@
 # single-layer-3D-TFM
-Repository for single-layer 3D TFM scripts used for measuring cellular displacements and tractions from a gel with a single bead layer imaged with epifluorescence microscopy. This contains the Matlab, Python, and PowerShell scripts needed to run our single-layer 3D TFM algorithm. This algorithm uses epifluorescence image stacks with a single layer of fluorescent micro-beads embedded at a gel surface to reconstuct 3D surface layer displacements and tractions, given approperiate material properties for the gel. See our paper describing this process for more details: ..........
+Repository for single-layer 3D TFM scripts used for measuring cellular displacements and tractions from a gel with a single bead layer imaged with epifluorescence microscopy. This contains the Matlab, Python, and PowerShell scripts needed to run our single-layer 3D TFM algorithm. This algorithm uses epifluorescence image stacks with a single layer of fluorescent micro-beads embedded at a gel surface to reconstuct 3D surface layer displacements and tractions, given approperiate material properties for the gel. See our paper describing this process for more details: Hazlett, L., Landauer, A.K., Patel, M. et al. Epifluorescence-based three-dimensional traction force microscopy. Sci Rep 10, 16599 (2020). https://doi.org/10.1038/s41598-020-72931-6
 
 
 
@@ -57,17 +57,22 @@ If used please cite:
 .......
 
 ```bibtex
-@article{,
-  title={},
-  author={},
-  journal={},
-  volume={},
-  number={},
-  pages={},
-  year={},
-  publisher={}
+
+@article{hazlett_epifluorescence-based_2020,
+	title = {Epifluorescence-based three-dimensional traction force microscopy},
+	volume = {10},
+	copyright = {2021 The Author(s)},
+	issn = {2045-2322},
+	url = {https://www.nature.com/articles/s41598-020-72931-6},
+	doi = {10.1038/s41598-020-72931-6},
+	number = {1},
+	journal = {Scientific Reports},
+	author = {Hazlett, Lauren and Landauer, Alexander K. and Patel, Mohak and Witt, Hadley A. and Yang, Jin and Reichner, Jonathan S. and Franck, Christian},
+	month = oct,
+	year = {2020},
+	pages = {16599}
 }
-}
+
 ```
 
 ## Contact and support
