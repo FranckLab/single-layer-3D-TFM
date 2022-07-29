@@ -46,9 +46,6 @@ We have used several 3rd party Matlab scripts, cheifly from the Matlab File Exch
  -
  -
  -
-.....
-.....
-.....
 
 
 ## Cite
@@ -74,5 +71,5 @@ If used please cite:
 ```
 
 ## Contact and support
-For questions, please first refer to [FAQ](https://github.com/FranckLab/single-layer-3D-TFM#faq) and [Questions/Issues](https://github.com/FranckLab/single-layer-3D-TFM/issues). Add a new question if similar issue has not yet been reported. The author's contact information can be found at [Franck Lab](https://www.franck.engr.wisc.edu).
+For questions, please first refer to [FAQ](https://github.com/FranckLab/single-layer-3D-TFM#faq) and [Questions/Issues](https://github.com/FranckLab/single-layer-3D-TFM/issues). Add a new question if similar issue has not yet been reported. The authors' contact information can be found at [Franck Lab](https://www.franck.engr.wisc.edu) or in the linked open-access paper.
 
