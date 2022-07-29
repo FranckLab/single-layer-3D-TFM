@@ -25,7 +25,7 @@ Notes:
 0. Install and configure Matlab (with Image Processing and Statistics toolboxes) and Docker Desktop 
 1. Make sure that the main files are added to the path in Matlab and the data directory is configured correctly.
 2. Download and save the [example data](https://minds.wisconsin.edu/handle/1793/79908) in the example folder. 
-3. Run the `SL3DTFM_runscript.m` script in Matlab, then start Docker and run the `run_sl_tfm_ps.ps1` in PowerShell, and finally run the `SL3DTFM_postFEniCS.m` script in Matlab.
+3. Run the `SL3DTFM_runfile.m` script in Matlab, then start Docker and run the `run_sl_tfm_ps.ps1` in PowerShell, and finally run the `SL3DTFM_postFEniCS.m` script in Matlab.
 
 ### Health warning!
 Deconvolution and Docker both may require a **large amount of RAM**. We recommend a minimum of 32GB system RAM. To avoid issues, run the Matlab displacement computations, then start Docker and run the FEA. This works best since at least 16GB of RAM should be allocated to Docker and deconvolution may also require more than 16GB RAM depending on settings and image sizes.
