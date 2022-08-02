@@ -15,7 +15,7 @@ Repository for single-layer 3D TFM scripts used for measuring cellular displacem
 
 Notes: 
   - For example datasets (both real experiments and sythetic data) see our data storage repository for this project hosted by UW MINDS here: https://minds.wisconsin.edu/handle/1793/79908
-  - For more detailed guidelines see the user manual (SI) in our associate paper.
+  - For more detailed guidelines see the user manual (SI) in our associated paper.
 
 ### Input 3D Image Stack Requirements
 * To check if the 3D image stack is approperiate, consult the orginal TPT guidelines and our associated [TPT paper](https://github.com/FranckLab/T-PT).
@@ -40,10 +40,10 @@ We have used several 3rd party Matlab scripts, cheifly from the Matlab File Exch
  - `regularizeNd.m`
  - `turbo.m`
  
-## FAQ
+## Tips and FAQ
 
 * How do I? ...
- -
+ - Note that after downloading data from MINDS as a .zip, directly extracting the folder in place will result in an extra folder "layer". Make sure the folder structure is as described in the documentation before running the code. 
  -
  -
 
